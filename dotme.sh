@@ -61,7 +61,7 @@ _cmd_install() {
 		_cmd_help
 	fi
 
-	for filex in $(find . ! -type d)
+	for filex in $(find . ! -type d | grep -v './.git/')
 	do
 		if ! _util_in_list $(echo "$filex" | sed 's/^\.\///') "$DOTME_IGNORE"
 		then
