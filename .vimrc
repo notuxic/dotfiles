@@ -123,8 +123,6 @@ Plug 'mhinz/vim-signify'
 Plug 'ajh17/VimCompletesMe'
 "" .editorconfig support
 Plug 'editorconfig/editorconfig-vim'
-"" .env support
-Plug 'tpope/vim-dotenv'
 "" directory-local config
 Plug 'embear/vim-localvimrc'
 "" detect and set indent options
@@ -152,12 +150,6 @@ Plug 'tpope/vim-tbone'
 Plug 'Jorengarenar/miniSnip'
 "" REST console
 Plug 'diepm/vim-rest-console'
-"" file tree viewer
-Plug 'lambdalisue/fern.vim'
-Plug 'lambdalisue/fern-renderer-devicons.vim'
-Plug 'lambdalisue/fern-git-status.vim'
-"" tag viewer
-Plug 'liuchengxu/vista.vim'
 "" latex
 Plug 'lervag/vimtex'
 "" linting, fixing, ...
@@ -203,7 +195,6 @@ let g:airline#extensions#fugitiveline#enabled = 1
 let g:airline#extensions#gutentags#enabled = 1
 let g:airline#extensions#obession#enabled = 1
 let g:airline#extensions#term#enabled = 1
-let g:airline#extensions#vista#enabled = 1
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
@@ -302,7 +293,7 @@ call lexima#add_rule({
 \ })
 
 "" grepper
-"let g:grepper = {}
+runtime plugin/grepper.vim
 let g:grepper.quickfix = 0
 let g:grepper.jump = 0
 let g:grepper.prompt = 1
@@ -342,33 +333,6 @@ let g:miniSnip_extends = {
 \   'latex': ['tex']
 \ }
 
-"" fern
-let g:fern#renderer = 'devicons'
-augroup fernCustomAutocmds
-	autocmd!
-	autocmd FileType fern setlocal nonumber norelativenumber numberwidth=1
-augroup END
-
-"" vista
-"let g:vista_ctags_executable = 'ctags'
-let g:vista_default_executive = 'ctags'
-let g:vista_executive_for = {
-\ 'c'        : 'vim_lsp',
-\ 'cpp'      : 'vim_lsp',
-\ 'markdown' : 'toc',
-\ 'pandoc'   : 'markdown',
-\ 'python'   : 'vim_lsp',
-\ 'rust'     : 'ctags',
-\ }
-let g:vista_finder_alternative_executives = ['ctags']
-"let g:vista_ctags_cmd = {}
-let g:vista_highlight_whole_line = 1
-let g:vista_fold_toggle_icons = ['▼', '▶']
-let g:vista_icon_indent = ['└→', '├→']
-let g:vista_sidebar_width = 50
-let g:vista_echo_cursor = 0
-let g:vista_echo_cursor_strategy = 'floating_win'
-
 "" vimtex
 let g:vimtex_compiler_method = 'latexmk'
 let g:vimtex_complete_enabled = 0
@@ -402,7 +366,6 @@ let g:ale_linters = {
 \ 'tex'    : ['texlab', 'chktex', 'lacheck'],
 \ 'rust'   : ['cargo', 'analyzer'],
 \ }
-let g:ale_completion_symbols = g:vista#renderer#icons
 " use ALE autocompletion for certain filetypes
 augroup ALEComplete
 	autocmd!
@@ -414,6 +377,7 @@ let g:lsp_diagnostics_enabled = 0
 let g:lsp_signs_enabled = 0
 let g:lsp_fold_enabled = 0
 let g:lsp_semantic_enabled = 0
+let g:lsp_document_code_action_signs_enabled = 0
 set omnifunc=lsp#complete
 "set tagfunc=lsp#tagfunc
 let g:lsp_settings = {
@@ -595,12 +559,6 @@ vmap <C-Left> <Plug>MoveBlockLeft
 "" grepper
 nnoremap <Leader>g :Grepper<CR>
 nnoremap <Leader>G :Grepper -dir repo<CR>
-
-"" fern
-nnoremap <silent> <Leader>t :Fern . -drawer -reveal=% -stay -toggle<CR>
-
-"" vista
-nnoremap <silent> <Leader>v :Vista!!<CR>
 
 "" ale
 nnoremap <silent> <Leader>ad :ALEGoToDefinition<CR>
