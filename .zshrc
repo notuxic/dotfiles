@@ -17,8 +17,6 @@ source ~/.zsh/antigen.zsh
 antigen bundle https://github.com/belak/zsh-utils editor
 # automatically activate/deactivate python virtualenvs
 antigen bundle MichaelAquilina/zsh-autoswitch-virtualenv
-# command to move to a parent directory
-antigen bundle Tarrasch/zsh-bd
 # autopair
 antigen bundle hlissner/zsh-autopair
 # fish-style completion suggestions

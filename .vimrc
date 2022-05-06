@@ -137,7 +137,7 @@ Plug 'cohama/lexima.vim'
 """" Tools
 
 "" fast grepping
-Plug 'mileszs/ack.vim'
+Plug 'mhinz/vim-grepper'
 "" CMake support
 Plug 'ilyachur/cmake4vim'
 "" git commands
@@ -166,11 +166,14 @@ Plug 'dense-analysis/ale'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
-if has("nvim")
+if has('nvim')
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 	"" dap client
 	Plug 'mfussenegger/nvim-dap'
 	Plug 'theHamsta/nvim-dap-virtual-text'
+elseif has('python3')
+	"" dap client
+	Plug 'puremourning/vimspector'
 endif
 
 """" Dependencies
@@ -181,7 +184,7 @@ Plug 'xolox/vim-misc'
 Plug 'glts/vim-magnum'
 "" tpope/vim-surround tpope/vim-speeddating glts/vim-radical
 Plug 'tpope/vim-repeat'
-if has("nvim")
+if has('nvim')
 	"" lambdalisue/fern.vim
 	Plug 'antoinemadec/FixCursorHold.nvim'
 endif
@@ -298,14 +301,20 @@ call lexima#add_rule({
 \ 'at': '^.*\\begin{\([^}]*\)}\(\[.*\]\)*\%#$'
 \ })
 
-"" ack.vim
-let g:ackprg = 'rg --vimgrep --type-not sql --smart-case'
-let g:ack_apply_qmappings = 0
-let g:ack_apply_lmappings = 0
-let g:ackhighlight = 0
-let g:ack_autoclose = 0
-let g:ack_use_dispatch = 0
-let g:ack_use_cword_for_empty_search = 1
+"" grepper
+"let g:grepper = {}
+let g:grepper.quickfix = 0
+let g:grepper.jump = 0
+let g:grepper.prompt = 1
+let g:grepper.prompt_text = 'grep: '
+let g:grepper.prompt_quote = 1
+let g:grepper.prompt_mapping_tool = '<C-S-T>'
+let g:grepper.prompt_mapping_dir = '<C-S-D>'
+let g:grepper.prompt_mapping_side = '<C-S-S>'
+let g:grepper.dir = 'cwd'
+let g:grepper.side = 0
+let g:grepper.tools = ['rg', 'grep']
+
 
 "" gutentags
 let g:gutentags_modules = ['ctags']
@@ -382,7 +391,7 @@ augroup END
 
 "" ale
 "set omnifunc=ale#completion#OmniFunc
-let g:ale_disable_lsp = 0
+let g:ale_disable_lsp = 1
 let g:ale_sign_error = ''
 let g:ale_sign_warning = ''
 let g:ale_linters = {
@@ -416,14 +425,14 @@ let g:lsp_settings_enable_suggestions = 0
 "" nvim-dap/nvim-dap-virtual-text
 if has("nvim")
 lua << EOF
-	require('dap')
-	require('dap-adapters')
+	local dap = require('dap')
 
 	-- nvim-dap
 	vim.fn.sign_define('DapBreakpoint', {text='●', texthl='Error', linehl='', numhl=''})
+	vim.fn.sign_define('DapBreakpointCondition', {text='◉', texthl='Error', linehl='', numhl=''})
 	vim.fn.sign_define('DapLogPoint', {text='◆', texthl='Constant', linehl='', numhl=''})
-	vim.fn.sign_define('DapStopped', {text='', texthl='Constant', linehl='CursorLine', numhl=''})
 	vim.fn.sign_define('DapBreakpointRejected', {text='◌', texthl='Error', linehl='', numhl=''})
+	vim.fn.sign_define('DapStopped', {text='', texthl='Constant', linehl='CursorLine', numhl=''})
 
 	-- nvim-dap-virtual-text
 	require('nvim-dap-virtual-text').setup {
@@ -434,7 +443,48 @@ lua << EOF
 		show_stop_reason = true,
 		commented = true
 	}
+
+	-- adapter: lldb-vscode: c/c++/rust
+	dap.adapters.lldb = {
+		type = 'executable',
+		command = 'lldb-vscode',
+		name = 'lldb'
+	}
+	dap.adapters.c = dap.adapters.lldb
+	dap.adapters.cpp = dap.adapters.lldb
+	dap.adapters.rust = dap.adapters.lldb
+
+	-- adapter: debugpy: python
+	dap.adapters.python = {
+		type = 'executable',
+		command = 'python3',
+		args = {'-m', 'debugpy.adapter'}
+	}
 EOF
+
+"" vimspector
+elseif has('python3')
+	sign define vimspectorBP text=● texthl=Error
+	sign define vimspectorBPCond text=◉ texthl=Error
+	sign define vimspectorBPLog text=◆ texthl=Constant
+	sign define vimspectorBPDisabled text=◌ texthl=Error
+	sign define vimspectorPC text= texthl=Constant linehl=CursorLine
+	sign define vimspectorPCBP text= texthl=Error linehl=CursorLine
+
+	let g:vimspector_adapters = {
+\		'lldb-vscode' : {
+\			'name': 'lldb-vscode',
+\			'command': 'lldb-vscode'
+\		},
+\		'debugpy': {
+\			'name': 'debugpy',
+\			'command': ['python3', '-m', 'debugpy.adapter'],
+\			'configuration': {
+\				'python': 'python3',
+\				'subProcess': v:false
+\			}
+\		}
+\	}
 endif
 
 
@@ -460,12 +510,13 @@ set background=dark
 let g:neosolarized_vertSplitBgTrans = 0
 let g:airline_solarized_bg = 'dark'
 let g:airline_theme = 'solarized'
-colorscheme NeoSolarized
 augroup colorNeoSolarized
 	autocmd!
 	autocmd ColorScheme NeoSolarized highlight clear MatchParen
 	autocmd ColorScheme NeoSolarized highlight MatchParen term=reverse cterm=bold ctermbg=10 gui=bold guibg=#1f4a54
+	autocmd ColorScheme NeoSolarized highlight ToolbarLine ctermbg=10 guibg=#586e75
 augroup END
+colorscheme NeoSolarized
 
 "" set cursor shape based on mode
 if !has('nvim')
@@ -541,11 +592,9 @@ vmap <C-Right> <Plug>MoveBlockRight
 nmap <C-Left> <Plug>MoveCharLeft
 vmap <C-Left> <Plug>MoveBlockLeft
 
-"" grep
-nnoremap <Leader>g :Ack!<Space>
-"nnoremap <Leader>G :AckFile<Space>
-nnoremap <Leader>G :CustomAckFile<Space>
-nnoremap <Leader>/ :AckWindow!<Space>
+"" grepper
+nnoremap <Leader>g :Grepper<CR>
+nnoremap <Leader>G :Grepper -dir repo<CR>
 
 "" fern
 nnoremap <silent> <Leader>t :Fern . -drawer -reveal=% -stay -toggle<CR>
@@ -595,9 +644,9 @@ vmap <LocalLeader>: <Plug>UnpadBlockAbove
 vmap <LocalLeader>" <Plug>UnpadBlockBelow
 vmap <LocalLeader><BS> <Plug>UnpadBlockAround
 
-"" nvim-dap
-if has("nvim")
-	nnoremap <silent> <F2> :lua require'dap.ui.widgets'.centered_float(require'dap.ui.widgets'.scopes)<CR>
+if has('nvim')
+	"" nvim-dap
+	nnoremap <silent> <F2> :lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('message: '))<CR>
 	nnoremap <silent> <F3> :lua require'dap'.set_breakpoint(vim.fn.input('condition: '))<CR>
 	nnoremap <silent> <F4> :lua require'dap'.toggle_breakpoint()<CR>
 	nnoremap <silent> <F5> :lua require'dap'.run_to_cursor()<CR>
@@ -606,7 +655,25 @@ if has("nvim")
 	nnoremap <silent> <F8> :lua require'dap'.step_over()<CR>
 	nnoremap <silent> <F9> :lua require'dap'.configurations={}<CR>:lua require'dap.ext.vscode'.load_launchjs()<CR>:lua require'dap'.continue()<CR>
 	nnoremap <silent> <F10> :lua require'dap'.disconnect()<CR>:lua require'dap'.close()<CR>:lua vim.api.nvim_buf_clear_namespace(0, -1, 0, -1)<CR>
-	nnoremap <silent> <F12> :lua require'dap'.repl.toggle()<CR>
+	nnoremap <silent> <F11> :lua require'dap'.list_breakpoints()<CR>:copen<CR>
+	nnoremap <silent> <F12> :lua require'dap.ui.widgets'.centered_float(require'dap.ui.widgets'.scopes)<CR>
+elseif has('python3')
+	"" vimspector
+	nnoremap <silent> <F2> :call vimspector#ToggleBreakpoint({'logMessage': input('message: ')})<CR>
+	nnoremap <silent> <F3> :call vimspector#ToggleBreakpoint({'condition': input('condition: ')})<CR>
+	nnoremap <silent> <F4> <Plug>VimspectorToggleBreakpoint
+	nnoremap <silent> <F5> <Plug>VimspectorRunToCursor
+	nnoremap <silent> <Leader><F5> <Plug>VimspectorGoToCurrentLine
+	nnoremap <silent> <F6> <Plug>VimspectorStepOut
+	nnoremap <silent> <F7> <Plug>VimspectorStepInto
+	nnoremap <silent> <F8> <Plug>VimspectorStepOver
+	nnoremap <silent> <F9> <Plug>VimspectorContinue
+	nnoremap <silent> <F10> :call vimspector#Reset({'interactive': v:false})<CR>
+	nnoremap <silent> <F11> :call setqflist(vimspector#GetBreakpointsAsQuickFix()) <Bar> copen<CR>
+	nnoremap <Leader><F11> :VimspectorEval<Space>
+	vnoremap <silent> <Leader><F11> <Plug>VimspectorBalloonEval
+	nnoremap <silent> <F12> :VimspectorWatch <C-R><C-W><CR>
+	nnoremap <Leader><F12> :VimspectorWatch<Space>
 endif
 
 
@@ -718,7 +785,4 @@ augroup saveRestoreWinBufView
 augroup END
 
 """" 1st Party
-
-"" custom :AckFile that works with the ripgrep backend
-:command! -nargs=1 CustomAckFile :Ack! --files -g *<args>*
 
