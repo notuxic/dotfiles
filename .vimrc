@@ -284,22 +284,22 @@ call lexima#add_rule({
 \ 'char': '<CR>',
 \ 'input': '<CR>',
 \ 'input_after': '<CR>\\end{\1}',
-\ 'at': '^.*\\begin{\([^}]*\)}\(\[.*\]\)*\%#$',
+\ 'at': '^.*\\begin{\([^}]*\)}\({[^}]*}\)*\(\[.*\]\)*\%#$',
 \ 'with_submatch': 1
 \ })
 call lexima#add_rule({
-\ 'filetype': ['html', 'xhtml', 'html.mustache'],
+\ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache'],
 \ 'char': '>',
 \ 'input_after': '</\1>',
-\ 'at': '<\(\w\+\)[^>]*\%#',
-\ 'except': '/[^>]*\%#',
+\ 'at': '<\([0-9a-zA-Z_.-]\+\)[^>]*\%#',
+\ 'except': '/\s*\%#',
 \ 'with_submatch': 1
 \ })
 call lexima#add_rule({
-\ 'filetype': ['html', 'xhtml', 'html.mustache'],
+\ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache'],
 \ 'char': '<CR>',
 \ 'input_after': '<CR>',
-\ 'at': '<\(\w\+\)[^/]*>\%#</\1>'
+\ 'at': '<\([0-9a-zA-Z_.-]\+\)[^/>]*>\%#</\1>'
 \ })
 
 "" grepper
