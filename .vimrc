@@ -127,8 +127,6 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'embear/vim-localvimrc'
 "" detect and set indent options
 Plug 'tpope/vim-sleuth'
-"" auto-close HTML/XML tags
-Plug 'alvan/vim-closetag'
 "" auto-close pairs
 Plug 'cohama/lexima.vim'
 
@@ -276,9 +274,6 @@ let g:localvimrc_persistence_file = StdpathShim('data') . '/lvimrc.persistent'
 let g:localvimrc_python2_enable = 0
 let g:localvimrc_python3_enable = 0
 
-"" closetag
-let g:closetag_filetypes = 'html,xhtml,html.mustache'
-
 "" lexima
 call lexima#add_rule({'filetype':'scheme', 'char':"'", 'input_after':''})
 call lexima#add_rule({'filetype':'tex', 'char':'$', 'input_after':'$'})
@@ -288,8 +283,23 @@ call lexima#add_rule({
 \ 'filetype': 'tex',
 \ 'char': '<CR>',
 \ 'input': '<CR>',
-\ 'input_after_with': '<CR>\\end{\1}',
-\ 'at': '^.*\\begin{\([^}]*\)}\(\[.*\]\)*\%#$'
+\ 'input_after': '<CR>\\end{\1}',
+\ 'at': '^.*\\begin{\([^}]*\)}\(\[.*\]\)*\%#$',
+\ 'with_submatch': 1
+\ })
+call lexima#add_rule({
+\ 'filetype': ['html', 'xhtml', 'html.mustache'],
+\ 'char': '>',
+\ 'input_after': '</\1>',
+\ 'at': '<\(\w\+\)[^>]*\%#',
+\ 'except': '/[^>]*\%#',
+\ 'with_submatch': 1
+\ })
+call lexima#add_rule({
+\ 'filetype': ['html', 'xhtml', 'html.mustache'],
+\ 'char': '<CR>',
+\ 'input_after': '<CR>',
+\ 'at': '<\(\w\+\)[^/]*>\%#</\1>'
 \ })
 
 "" grepper
@@ -620,17 +630,22 @@ elseif has('python3')
 	nnoremap <silent> <F2> :call vimspector#ToggleBreakpoint({'logMessage': input('message: ')})<CR>
 	nnoremap <silent> <F3> :call vimspector#ToggleBreakpoint({'condition': input('condition: ')})<CR>
 	nnoremap <silent> <F4> <Plug>VimspectorToggleBreakpoint
+	"nnoremap <silent> <Leader><F4> :call vimspector#ToggleBreakpointViewBreakpoint()<CR>
 	nnoremap <silent> <F5> <Plug>VimspectorRunToCursor
 	nnoremap <silent> <Leader><F5> <Plug>VimspectorGoToCurrentLine
 	nnoremap <silent> <F6> <Plug>VimspectorStepOut
 	nnoremap <silent> <F7> <Plug>VimspectorStepInto
 	nnoremap <silent> <F8> <Plug>VimspectorStepOver
 	nnoremap <silent> <F9> <Plug>VimspectorContinue
+	nnoremap <silent> <Leader><F9> <Plug>VimspectorRestart
 	nnoremap <silent> <F10> :call vimspector#Reset({'interactive': v:false})<CR>
-	nnoremap <silent> <F11> :call setqflist(vimspector#GetBreakpointsAsQuickFix()) <Bar> copen<CR>
-	nnoremap <Leader><F11> :VimspectorEval<Space>
-	vnoremap <silent> <Leader><F11> <Plug>VimspectorBalloonEval
+	nnoremap <silent> <Leader><F10> <Plug>VimspectorStop
+	nnoremap <F11> :VimspectorEval<Space>
+	vnoremap <silent> <F11> <Plug>VimspectorBalloonEval
+	"nnoremap <silent> <Leader><F11> :call setqflist(vimspector#GetBreakpointsAsQuickFix()) <Bar> copen<CR>
+	nnoremap <silent> <Leader><F11> <Plug>VimspectorBreakpoints
 	nnoremap <silent> <F12> :VimspectorWatch <C-R><C-W><CR>
+	vnoremap <silent> <F12> <Esc>:VimspectorWatch <C-R>*<CR>
 	nnoremap <Leader><F12> :VimspectorWatch<Space>
 endif
 
