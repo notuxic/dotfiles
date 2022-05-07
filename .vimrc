@@ -486,8 +486,8 @@ let g:airline_solarized_bg = 'dark'
 let g:airline_theme = 'solarized'
 augroup colorNeoSolarized
 	autocmd!
-	autocmd ColorScheme NeoSolarized highlight clear MatchParen
-	autocmd ColorScheme NeoSolarized highlight MatchParen term=reverse cterm=bold ctermbg=10 gui=bold guibg=#1f4a54
+	"autocmd ColorScheme NeoSolarized highlight clear MatchParen
+	"autocmd ColorScheme NeoSolarized highlight MatchParen term=reverse cterm=bold ctermbg=10 gui=bold guibg=#1f4a54
 	autocmd ColorScheme NeoSolarized highlight ToolbarLine ctermbg=10 guibg=#586e75
 augroup END
 colorscheme NeoSolarized
