@@ -57,9 +57,9 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_cursor_detail = 1
 let g:ale_close_preview_on_insert = 1
 let g:ale_echo_cursor = 0
-let g:ale_echo_delay = 100
 let g:ale_hover_cursor = 0
 let g:ale_hover_to_preview = 0
+let g:ale_hover_to_floating_preview = 1
 
 
 
@@ -155,6 +155,8 @@ Plug 'dense-analysis/ale'
 "" lsp client
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
+"" ale + vim-lsp integration
+Plug 'rhysd/vim-lsp-ale'
 
 if has('nvim')
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -366,8 +368,13 @@ augroup END
 "" ale
 "set omnifunc=ale#completion#OmniFunc
 let g:ale_disable_lsp = 1
+let g:ale_lsp_suggestions = 1
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 0
 let g:ale_sign_error = ''
 let g:ale_sign_warning = ''
+let g:ale_sign_info = ''
+let g:ale_floating_window_border = ['│', '─', '┌', '┐', '┘', '└']
 let g:ale_linters = {
 \ 'dart'   : ['analysis_server'],
 \ 'go'     : ['gofmt', 'golint', 'govet', 'gopls'],
@@ -383,10 +390,9 @@ augroup ALEComplete
 augroup END
 
 "" lsp
-let g:lsp_diagnostics_enabled = 0
-let g:lsp_signs_enabled = 0
 let g:lsp_fold_enabled = 0
 let g:lsp_semantic_enabled = 0
+let g:lsp_document_highlight_delay = 200
 let g:lsp_document_code_action_signs_enabled = 0
 set omnifunc=lsp#complete
 "set tagfunc=lsp#tagfunc
@@ -571,25 +577,29 @@ nnoremap <Leader>g :Grepper<CR>
 nnoremap <Leader>G :Grepper -dir repo<CR>
 
 "" ale
-nnoremap <silent> <Leader>ad :ALEGoToDefinition<CR>
-nnoremap <silent> <Leader>aD :ALEGoToTypeDefinition<CR>
-nnoremap <silent> <Leader>ah :ALEHover<CR>
-nnoremap <silent> <Leader>au :ALEFindReferences<CR>
+nnoremap <silent> <Leader>aA :ALECodeAction<CR>
+nnoremap <Leader>ad <Plug>(ale_go_to_definition)
+nnoremap <Leader>aD <Plug>(ale_go_to_type_definition)
+nnoremap <Leader>ah <Plug>(ale_hover)
+nnoremap <Leader>ai <Plug>(ale_go_to_implementation)
+nnoremap <Leader>au <Plug>(ale_find_references)
 nnoremap <silent> <Leader>ar :ALERename<CR>
-nnoremap <silent> <Leader>[ :ALEPreviousWrap<CR>
-nnoremap <silent> <Leader>] :ALENextWrap<CR>
+nnoremap <Leader>aq <Plug>ALEPopulateQuickfix<CR>
+nnoremap <Leader>[ <Plug>(ale_previous_wrap)
+nnoremap <Leader>] <Plug>(ale_next_wrap)
 nnoremap <Leader>as :ALESymbolSearch<Space>
 
 "" lsp
-nnoremap <silent> <Leader>ld :LspDefinition<CR>
-nnoremap <silent> <Leader>lD :LspTypeDefinition<CR>
-nnoremap <silent> <Leader>lh :LspHover<CR>
-nnoremap <silent> <Leader>li :LspImplementation<CR>
-nnoremap <silent> <Leader>lu :LspReferences<CR>
-nnoremap <silent> <Leader>lr :LspRename<CR>
 nnoremap <silent> <Leader>la :LspDocumentSwitchSourceHeader<CR>
-nnoremap <silent> <Leader>= :LspNextReference<CR>
-nnoremap <silent> <Leader>- :LspPreviousReference<CR>
+nnoremap <Leader>lA <Plug>(lsp_code_action)
+nnoremap <Leader>ld <Plug>(lsp_definition)
+nnoremap <Leader>lD <Plug>(lsp_type_definition)
+nnoremap <Leader>lh <Plug>(lsp_hover)
+nnoremap <Leader>li <Plug>(lsp_implementation)
+nnoremap <Leader>lu <Plug>(lsp_references)
+nnoremap <Leader>lr <Plug>(lsp_rename)
+nnoremap <Leader>= <Plug>(lsp_next_reference)
+nnoremap <Leader>- <Plug>(lsp_previous_reference)
 nnoremap <Leader>ls :LspWorkspaceSymbol<Space>
 
 "" padline
