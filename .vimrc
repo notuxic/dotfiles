@@ -176,10 +176,6 @@ Plug 'xolox/vim-misc'
 Plug 'glts/vim-magnum'
 "" tpope/vim-surround tpope/vim-speeddating glts/vim-radical
 Plug 'tpope/vim-repeat'
-if has('nvim')
-	"" lambdalisue/fern.vim
-	Plug 'antoinemadec/FixCursorHold.nvim'
-endif
 
 call plug#end()
 
