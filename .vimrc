@@ -580,7 +580,7 @@ nnoremap <Leader>ah <Plug>(ale_hover)
 nnoremap <Leader>ai <Plug>(ale_go_to_implementation)
 nnoremap <Leader>au <Plug>(ale_find_references)
 nnoremap <silent> <Leader>ar :ALERename<CR>
-nnoremap <Leader>aq <Plug>ALEPopulateQuickfix<CR>
+nnoremap <Leader>aq :ALEPopulateQuickfix<CR>
 nnoremap <Leader>[ <Plug>(ale_previous_wrap)
 nnoremap <Leader>] <Plug>(ale_next_wrap)
 nnoremap <Leader>as :ALESymbolSearch<Space>
