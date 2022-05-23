@@ -587,15 +587,15 @@ nnoremap <Leader>as :ALESymbolSearch<Space>
 
 "" lsp
 nnoremap <silent> <Leader>la :LspDocumentSwitchSourceHeader<CR>
-nnoremap <Leader>lA <Plug>(lsp_code_action)
-nnoremap <Leader>ld <Plug>(lsp_definition)
-nnoremap <Leader>lD <Plug>(lsp_type_definition)
-nnoremap <Leader>lh <Plug>(lsp_hover)
-nnoremap <Leader>li <Plug>(lsp_implementation)
-nnoremap <Leader>lu <Plug>(lsp_references)
-nnoremap <Leader>lr <Plug>(lsp_rename)
-nnoremap <Leader>= <Plug>(lsp_next_reference)
-nnoremap <Leader>- <Plug>(lsp_previous_reference)
+nnoremap <Leader>lA <Plug>(lsp-code-action)
+nnoremap <Leader>ld <Plug>(lsp-definition)
+nnoremap <Leader>lD <Plug>(lsp-type-definition)
+nnoremap <Leader>lh <Plug>(lsp-hover)
+nnoremap <Leader>li <Plug>(lsp-implementation)
+nnoremap <Leader>lu <Plug>(lsp-references)
+nnoremap <Leader>lr <Plug>(lsp-rename)
+nnoremap <Leader>= <Plug>(lsp-next-reference)
+nnoremap <Leader>- <Plug>(lsp-previous-reference)
 nnoremap <Leader>ls :LspWorkspaceSymbol<Space>
 
 "" padline
