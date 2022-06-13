@@ -299,6 +299,14 @@ call lexima#add_rule({
 \ 'input_after': '<CR>',
 \ 'at': '<\([0-9a-zA-Z_.-]\+\)[^/>]*>\%#</\1>'
 \ })
+call lexima#add_rule({
+\ 'filetype': 'html.mustache',
+\ 'char': '<CR>',
+\ 'input': '<CR>',
+\ 'input_after': '<CR>{{/\2}}',
+\ 'at': '^.*{{\(#\|\^\)\([^}]*\)}}*\%#$',
+\ 'with_submatch': 1
+\ })
 
 "" grepper
 runtime plugin/grepper.vim
@@ -446,6 +454,15 @@ elseif has('python3')
 	sign define vimspectorBPDisabled text=◌ texthl=Error
 	sign define vimspectorPC text= texthl=Constant linehl=CursorLine
 	sign define vimspectorPCBP text= texthl=Error linehl=CursorLine
+
+	let g:vimspector_sign_priority = {
+\		'vimspectorBP': 100,
+\		'vimspectorBPCond': 100,
+\		'vimspectorBPLog': 100,
+\		'vimspectorBPDisabled': 100,
+\		'vimspectorPC': 200,
+\		'vimspectorPCBP': 200
+\	}
 
 	let g:vimspector_adapters = {
 \		'lldb-vscode' : {
