@@ -15,6 +15,13 @@ XTerm*renderFont: true
 XTerm*forceXftHeight: false
 XTerm*faceName: Hack Nerd Font Mono:antialias=true
 XTerm*faceSize: 11
+XTerm*faceSize1: 9
+XTerm*faceSize2: 11
+XTerm*faceSize3: 13
+XTerm*faceSize4: 15
+XTerm*faceSize5: 17
+XTerm*faceSize6: 19
+XTerm*faceSize7: 21
 XTerm*foreground: rgb:83/94/96
 XTerm*background: rgb:00/2b/36
 XTerm*color0: rgb:07/36/42
@@ -33,6 +40,11 @@ XTerm*color12: rgb:83/94/96
 XTerm*color13: rgb:6c/71/c4
 XTerm*color14: rgb:93/a1/a1
 XTerm*color15: rgb:fd/f6/e3
+XTerm*omitTranslation: fullscreen,paging,reset,select,shift-fonts
+XTerm*VT100*translations: #override \n\
+	Meta <Key>): set-vt-font(d)\n\
+	Meta <Key>_: smaller-vt-font() \n\
+	Meta <Key>+: larger-vt-font()
 
 
 !!! sxiv
