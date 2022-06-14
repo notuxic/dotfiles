@@ -47,6 +47,34 @@ XTerm*VT100*translations: #override \n\
 	Meta <Key>+: larger-vt-font()
 
 
+!!! zutty
+Zutty.altScroll: false
+Zutty.autoCopy: false
+Zutty.saveLines: 0
+Zutty.altSendsEscape: true
+Zutty.boldColors: false
+Zutty.font: Hack Nerd Font Mono
+Zutty.fontsize: 15
+Zutty.fg: 839496
+Zutty.bg: 002b36
+Zutty.color0: 073642
+Zutty.color1: dc322f
+Zutty.color2: 859900
+Zutty.color3: b58900
+Zutty.color4: 268bd2
+Zutty.color5: d33682
+Zutty.color6: 2aa198
+Zutty.color7: eee8d5
+Zutty.color8: 002b36
+Zutty.color9: cb4b16
+Zutty.color10: 586e75
+Zutty.color11: 657b83
+Zutty.color12: 839496
+Zutty.color13: 6c71c4
+Zutty.color14: 93a1a1
+Zutty.color15: fdf6e3
+
+
 !!! sxiv
 Sxiv.background: #002B36
 Sxiv.foreground: #657b83
