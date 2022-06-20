@@ -105,12 +105,12 @@ super + {_,shift + }{1-9,0}
 super + ctrl + {h,j,k,l}
 	bspc node -p {west,south,north,east}
 
-# preselect the direction using mouse
-super + ctrl + {_,shift + } button3
-	bspc node {,$(bspc query -d focused -N pointed)} -p $(~/.config/bspwm/pointer_region.sh {active,all})
-
 super + ctrl + {Left,Down,Up,Right}
 	bspc node -p {west,south,north,east}
+
+# preselect the direction using mouse
+super + ctrl + {_,shift + } button3
+	bspc node {,$(xdotool getmouselocation | cut -d ':' -f 5)} -p $(~/.config/bspwm/pointer_region.sh {active,all})
 
 # preselect the ratio
 super + ctrl + {1-9}
@@ -119,6 +119,10 @@ super + ctrl + {1-9}
 # cancel the preselection for the focused node
 super + ctrl + space
 	bspc node -p cancel
+
+# cancel the preselection using mouse
+super + ctrl + button2
+	bspc node $(xdotool getmouselocation | cut -d ':' -f 5) -p cancel
 
 # cancel the preselection for the focused desktop
 super + ctrl + shift + space
