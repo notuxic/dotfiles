@@ -38,7 +38,6 @@ picom --daemon
 ## stop all subscriptions
 for pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ bspc subscribe/ { print $1 }')
 do
-	echo killin $pid
 	kill -s KILL $pid
 done
 
