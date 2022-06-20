@@ -5,7 +5,7 @@
 ##
 ## Usage Example (add to .sxhkdrc):
 ## super + ctrl + {_,shift + } button3
-##  bspc node {,$(bspc query -d focused -N pointed)} -p $(~/.config/bspwm/pointer_region.sh {active,all})
+##  bspc node {,$(xdotool getmouselocation | cut -d ':' -f 5)} -p $(~/.config/bspwm/pointer_region.sh {active,all})
 ##
 ## Author: notuxic
 ## License: CC0
