@@ -88,6 +88,21 @@ zle -N edit-command-line
 #  Snippets
 #############
 
+## show SSH status in tmux statusline
+tmux-ssh-status() {
+  if [[ -n ${TMUX} ]]
+  then
+    local _tmux_status_right="$(tmux show-options -gv status-right)"
+    if [[ -n ${SSH_CONNECTION} ]]
+    then
+      tmux set-option -s status-right "${_tmux_status_right}#[fg=color3]#[fg=color15,bg=color3] SSH "
+    else
+      tmux set-option -s status-right "${_tmux_status_right}"
+    fi
+  fi
+}
+tmux-ssh-status
+
 ## Ctrl-z toggles the latest foreground job, preserving zsh input buffer
 ## based on: https://stackoverflow.com/q/30662735
 toggle-ctrl-z () {
