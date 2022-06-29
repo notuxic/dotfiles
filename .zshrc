@@ -69,6 +69,7 @@ setopt EMACS
 setopt INTERACTIVE_COMMENTS
 #setopt PATH_DIRS
 setopt RM_STAR_SILENT
+export ZLE_RPROMPT_INDENT=0
 
 # history
 export HISTFILE="$HOME/.zsh_history"
