@@ -90,6 +90,12 @@ bspc config bottom_padding 0
 bspc config left_padding 0
 
 
+#  Rules
+##########
+
+bspc rule -a "Zathura" state=tiled
+
+
 #  Workspaces
 ###############
 
