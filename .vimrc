@@ -158,12 +158,7 @@ Plug 'mattn/vim-lsp-settings'
 "" ale + vim-lsp integration
 Plug 'rhysd/vim-lsp-ale'
 
-if has('nvim')
-	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-	"" dap client
-	Plug 'mfussenegger/nvim-dap'
-	Plug 'theHamsta/nvim-dap-virtual-text'
-elseif has('python3')
+if has('python3')
 	"" dap client
 	Plug 'puremourning/vimspector'
 endif
@@ -406,48 +401,8 @@ let g:lsp_settings = {
 \ }
 let g:lsp_settings_enable_suggestions = 0
 
-"" nvim-dap/nvim-dap-virtual-text
-if has("nvim")
-lua << EOF
-	local dap = require('dap')
-
-	-- nvim-dap
-	vim.fn.sign_define('DapBreakpoint', {text='●', texthl='Error', linehl='', numhl=''})
-	vim.fn.sign_define('DapBreakpointCondition', {text='◉', texthl='Error', linehl='', numhl=''})
-	vim.fn.sign_define('DapLogPoint', {text='◆', texthl='Constant', linehl='', numhl=''})
-	vim.fn.sign_define('DapBreakpointRejected', {text='◌', texthl='Error', linehl='', numhl=''})
-	vim.fn.sign_define('DapStopped', {text='', texthl='Constant', linehl='CursorLine', numhl=''})
-
-	-- nvim-dap-virtual-text
-	require('nvim-dap-virtual-text').setup {
-		enabled = true,
-		enabled_commands = true,
-		highlight_changed_variables = true,
-		highlight_new_as_changed = true,
-		show_stop_reason = true,
-		commented = true
-	}
-
-	-- adapter: lldb-vscode: c/c++/rust
-	dap.adapters.lldb = {
-		type = 'executable',
-		command = 'lldb-vscode',
-		name = 'lldb'
-	}
-	dap.adapters.c = dap.adapters.lldb
-	dap.adapters.cpp = dap.adapters.lldb
-	dap.adapters.rust = dap.adapters.lldb
-
-	-- adapter: debugpy: python
-	dap.adapters.python = {
-		type = 'executable',
-		command = 'python3',
-		args = {'-m', 'debugpy.adapter'}
-	}
-EOF
-
 "" vimspector
-elseif has('python3')
+if has('python3')
 	sign define vimspectorBP text=● texthl=Error
 	sign define vimspectorBPCond text=◉ texthl=Error
 	sign define vimspectorBPLog text=◆ texthl=Constant
@@ -635,20 +590,7 @@ vmap <LocalLeader>: <Plug>UnpadBlockAbove
 vmap <LocalLeader>" <Plug>UnpadBlockBelow
 vmap <LocalLeader><BS> <Plug>UnpadBlockAround
 
-if has('nvim')
-	"" nvim-dap
-	nnoremap <silent> <F2> :lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('message: '))<CR>
-	nnoremap <silent> <F3> :lua require'dap'.set_breakpoint(vim.fn.input('condition: '))<CR>
-	nnoremap <silent> <F4> :lua require'dap'.toggle_breakpoint()<CR>
-	nnoremap <silent> <F5> :lua require'dap'.run_to_cursor()<CR>
-	nnoremap <silent> <F6> :lua require'dap'.step_out()<CR>
-	nnoremap <silent> <F7> :lua require'dap'.step_into()<CR>
-	nnoremap <silent> <F8> :lua require'dap'.step_over()<CR>
-	nnoremap <silent> <F9> :lua require'dap'.configurations={}<CR>:lua require'dap.ext.vscode'.load_launchjs()<CR>:lua require'dap'.continue()<CR>
-	nnoremap <silent> <F10> :lua require'dap'.disconnect()<CR>:lua require'dap'.close()<CR>:lua vim.api.nvim_buf_clear_namespace(0, -1, 0, -1)<CR>
-	nnoremap <silent> <F11> :lua require'dap'.list_breakpoints()<CR>:copen<CR>
-	nnoremap <silent> <F12> :lua require'dap.ui.widgets'.centered_float(require'dap.ui.widgets'.scopes)<CR>
-elseif has('python3')
+if has('python3')
 	"" vimspector
 	nnoremap <silent> <F2> :call vimspector#ToggleBreakpoint({'logMessage': input('message: ')})<CR>
 	nnoremap <silent> <F3> :call vimspector#ToggleBreakpoint({'condition': input('condition: ')})<CR>
