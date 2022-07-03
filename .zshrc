@@ -88,6 +88,25 @@ zle -N edit-command-line
 #  Snippets
 #############
 
+## load ssh-agent
+load-ssh-agent() {
+  type ssh-agent >/dev/null 2>/dev/null
+  if [ $? -eq 0 ] && [[ ! -n ${SSH_AUTH_SOCK} ]]
+  then
+    local ssh_env_path="/tmp/ssh-agent-$(id -u).env"
+    if [[ -n $(ps -o comm -u $(id -u) | grep ssh-agent) ]] && [[ -e ${ssh_env_path} ]]
+    then
+      source "$ssh_env_path" >/dev/null
+    else
+      echo "" > "$ssh_env_path"
+      chmod 700 "$ssh_env_path" && ssh-agent > "$ssh_env_path"
+      source "$ssh_env_path" >/dev/null
+    fi
+  fi
+}
+load-ssh-agent
+
+
 ## show SSH status in tmux statusline
 tmux-ssh-status() {
   if [[ -n ${TMUX} ]]
