@@ -12,6 +12,10 @@ fi
 hsetroot -cover $HOME/.config/wallpaper
 
 
+## set cursor
+xsetroot -cursor_name left_ptr
+
+
 ## stop all statusbars
 for pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ perl .*statusbar.pl/ { print $1 }')
 do

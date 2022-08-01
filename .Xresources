@@ -1,3 +1,6 @@
+Xcursor.theme: xcursor-breeze
+
+
 !!! xterm
 XTerm*termName: xterm-256color
 XTerm*locale: true
@@ -10,6 +13,7 @@ XTerm*underLine: true
 XTerm*metaSendsEscape: true
 !XTerm*modifyOtherKeys:
 XTerm*fullscreen: 3
+XTerm*pointerFont: xcursor-breeze
 XTerm*pointerShape: left_ptr
 XTerm*renderFont: true
 XTerm*forceXftHeight: false
