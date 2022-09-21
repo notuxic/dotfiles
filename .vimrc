@@ -375,13 +375,15 @@ let g:ale_sign_warning = ''
 let g:ale_sign_info = ''
 let g:ale_floating_window_border = ['│', '─', '┌', '┐', '┘', '└']
 let g:ale_linters = {
-\ 'dart'   : ['analysis_server'],
-\ 'go'     : ['gofmt', 'golint', 'govet', 'gopls'],
-\ 'java'   : ['javalsp'],
-\ 'python' : ['pylint', 'pyright'],
-\ 'tex'    : ['texlab', 'chktex', 'lacheck'],
-\ 'rust'   : ['cargo', 'analyzer'],
+\ 'dart'       : ['analysis_server'],
+\ 'go'         : ['gofmt', 'golint', 'govet', 'gopls'],
+\ 'java'       : ['javalsp'],
+\ 'python'     : ['pylint', 'pyright'],
+\ 'rust'       : ['cargo', 'analyzer'],
+\ 'tex'        : ['texlab', 'chktex', 'lacheck'],
+\ 'typescript' : ['eslint', 'standard']
 \ }
+let g:ale_typescript_standard_executable = 'ts-standard'
 " use ALE autocompletion for certain filetypes
 augroup ALEComplete
 	autocmd!
@@ -462,9 +464,19 @@ augroup colorNeoSolarized
 	autocmd!
 	"autocmd ColorScheme NeoSolarized highlight clear MatchParen
 	"autocmd ColorScheme NeoSolarized highlight MatchParen term=reverse cterm=bold ctermbg=10 gui=bold guibg=#1f4a54
+	autocmd ColorScheme NeoSolarized highlight clear SpecialKey
+	autocmd ColorScheme NeoSolarized highlight link SpecialKey Comment
 	autocmd ColorScheme NeoSolarized highlight ToolbarLine ctermbg=10 guibg=#586e75
 augroup END
 colorscheme NeoSolarized
+
+"" set whitespace hints
+set showbreak=\\uf63d
+augroup listChars
+	autocmd!
+	autocmd OptionSet shiftwidth setlocal listchars=tab:\\u2506\ ,trail:\\u00b7,extends:\\uf63d,precedes:\\uf63c
+	autocmd OptionSet shiftwidth execute 'setlocal listchars+=leadmultispace:\\u2506' . repeat('\\x20', v:option_new - 1)
+augroup END
 
 "" set cursor shape based on mode
 if !has('nvim')
