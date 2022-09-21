@@ -110,7 +110,6 @@ sub build_workspace_widget
 	{
 		$inactive_ws_pre[$i] = "^ca(1, bspc desktop $inactive_ws_pre[$i] -f)^fg(#fdf6e3) $workspace_icons_inactive{$inactive_ws_pre[$i]} ^ca()";
 	}
-	# my $inactive_ws_pre = join('', @inactive_ws_pre);
 	my $inactive_ws_pre = join('^fg(#93a1a1)', @inactive_ws_pre);
 
 	$active_workspace = "^fg(#fdf6e3) $workspace_icons_active{$active_workspace} ";
@@ -119,7 +118,6 @@ sub build_workspace_widget
 	{
 		$inactive_ws_post[$i] = "^ca(1, bspc desktop $inactive_ws_post[$i] -f)^fg(#fdf6e3) $workspace_icons_inactive{$inactive_ws_post[$i]} ^ca()";
 	}
-	# my $inactive_ws_post = join('', @inactive_ws_post);
 	my $inactive_ws_post = join('^fg(#93a1a1)', @inactive_ws_post);
 
 	if ($#inactive_ws_pre < 0)
@@ -128,7 +126,6 @@ sub build_workspace_widget
 	}
 	else
 	{
-		# $workspace_widget = "^fg(#002b36)^bg(#073642)^fg(#657b83)$inactive_ws_pre^fg(#073642)^bg(#839496)$active_workspace";
 		$workspace_widget = "^fg(#002b36)^bg(#657b83)$inactive_ws_pre^fg(#657b83)^bg(#839496)$active_workspace";
 	}
 
@@ -138,7 +135,6 @@ sub build_workspace_widget
 	}
 	else
 	{
-		# $workspace_widget = "$workspace_widget^fg(#839496)^bg(#073642)$inactive_ws_post^fg(#073642)^bg()";
 		$workspace_widget = "$workspace_widget^fg(#839496)^bg(#657b83)$inactive_ws_post^fg(#657b83)^bg()";
 	}
 
@@ -193,10 +189,8 @@ sub _main
 	parse_workspaces();
 	build_workspace_widget();
 
-	open(my $i3status, '-|', 'i3status');
-	open($dzen2, '|-', $dzen2_cmd);
-	binmode($i3status, ':utf8');
-	binmode($dzen2, ':utf8');
+	open(my $i3status, '-|:utf8', 'i3status');
+	open($dzen2, '|-:utf8', $dzen2_cmd);
 	$dzen2->autoflush(1);
 	while (<$i3status>)
 	{
