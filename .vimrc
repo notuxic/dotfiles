@@ -648,6 +648,9 @@ map! [1;5D <C-Left>
 
 "" select last change
 nnoremap gV `[v`]
+vnoremap ik `[o`]
+onoremap ik :<C-u>normal vik<CR>
+onoremap ak :<C-u>normal vikV<CR>
 
 "" don't start a new change on <Left> and <Right>
 inoremap <Right> <C-G>U<Right>
