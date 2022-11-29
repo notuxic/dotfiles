@@ -464,6 +464,10 @@ augroup colorNeoSolarized
 	autocmd!
 	"autocmd ColorScheme NeoSolarized highlight clear MatchParen
 	"autocmd ColorScheme NeoSolarized highlight MatchParen term=reverse cterm=bold ctermbg=10 gui=bold guibg=#1f4a54
+	autocmd ColorScheme NeoSolarized highlight SpellBad cterm=underline ctermul=1
+	autocmd ColorScheme NeoSolarized highlight SpellCap cterm=underline ctermul=4
+	autocmd ColorScheme NeoSolarized highlight SpellRare cterm=underline ctermul=5
+	autocmd ColorScheme NeoSolarized highlight SpellLocal cterm=underline ctermul=6
 	autocmd ColorScheme NeoSolarized highlight clear SpecialKey
 	autocmd ColorScheme NeoSolarized highlight link SpecialKey Comment
 	autocmd ColorScheme NeoSolarized highlight ToolbarLine ctermbg=10 guibg=#586e75
