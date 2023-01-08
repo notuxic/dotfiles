@@ -6,17 +6,15 @@ source ~/.zsh/promptline.sh
 ############
 
 ## auto-install plugin-manager
-if [ ! -e ~/.zsh/antigen.zsh ]
+if [ ! -e ~/.zsh/antigen ]
 then
   mkdir -p ~/.zsh
-  curl -L git.io/antigen > ~/.zsh/antigen.zsh
+  git clone https://github.com/zsh-users/antigen.git ~/.zsh/antigen
 fi
-source ~/.zsh/antigen.zsh
+source ~/.zsh/antigen/antigen.zsh
 
 # adds support for more special keys
 antigen bundle https://github.com/belak/zsh-utils editor
-# automatically activate/deactivate python virtualenvs
-antigen bundle MichaelAquilina/zsh-autoswitch-virtualenv
 # autopair
 antigen bundle hlissner/zsh-autopair
 # fish-style completion suggestions
