@@ -68,7 +68,16 @@ let g:ale_hover_to_floating_preview = 1
 
 call plug#begin(StdpathShim('data') . '/plugged')
 
-"""" Aesthetics
+"""" Dependencies
+
+"" xolox/vim-session
+Plug 'xolox/vim-misc'
+"" glts/vim-radical
+Plug 'glts/vim-magnum'
+"" tpope/vim-surround tpope/vim-speeddating glts/vim-radical
+Plug 'tpope/vim-repeat'
+
+"""" Appearance
 
 "" color scheme
 Plug 'iCyMind/NeoSolarized'
@@ -126,7 +135,7 @@ Plug 'editorconfig/editorconfig-vim'
 "" directory-local config
 Plug 'embear/vim-localvimrc'
 "" detect and set indent options
-Plug 'tpope/vim-sleuth'
+"Plug 'tpope/vim-sleuth'
 "" auto-close pairs
 Plug 'cohama/lexima.vim'
 
@@ -134,12 +143,8 @@ Plug 'cohama/lexima.vim'
 
 "" fast grepping
 Plug 'mhinz/vim-grepper'
-"" CMake support
-Plug 'ilyachur/cmake4vim'
 "" git commands
 Plug 'tpope/vim-fugitive'
-"" git commit browser
-Plug 'junegunn/gv.vim'
 "" shell commands
 Plug 'tpope/vim-eunuch'
 "" tmux commands
@@ -162,15 +167,6 @@ if has('python3')
 	"" dap client
 	Plug 'puremourning/vimspector'
 endif
-
-"""" Dependencies
-
-"" xolox/vim-session
-Plug 'xolox/vim-misc'
-"" glts/vim-radical
-Plug 'glts/vim-magnum'
-"" tpope/vim-surround tpope/vim-speeddating glts/vim-radical
-Plug 'tpope/vim-repeat'
 
 call plug#end()
 
@@ -254,9 +250,6 @@ let g:vcm_direction = 'p'
 let g:EditorConfig_core_mode = 'vim_core'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*']
 
-"" dispatch
-let g:dispatch_no_maps = 1
-
 "" localvimrc
 let g:localvimrc_enable = 1
 let g:localvimrc_name = ['.lvimrc', '.lvim/lvimrc']
@@ -268,6 +261,7 @@ let g:localvimrc_python2_enable = 0
 let g:localvimrc_python3_enable = 0
 
 "" lexima
+let g:lexima_ctrlh_as_backspace = 1
 call lexima#add_rule({'filetype':'scheme', 'char':"'", 'input_after':''})
 call lexima#add_rule({'filetype':'tex', 'char':'$', 'input_after':'$'})
 call lexima#add_rule({'filetype':'tex', 'char':'$', 'at':'\%#\$', 'leave':1})
@@ -326,11 +320,6 @@ let g:gutentags_background_update = 1
 let g:gutentags_cache_dir = StdpathShim('data') . '/tags'
 let g:gutentags_ctags_executable = 'ctags'
 "let g:gutentags_ctags_tagfile = 'tags'
-
-"" cmake4vim
-let g:cmake_compile_commands = 1
-let g:cmake_reload_after_save = 1
-let g:make_arguments = '-j'
 
 "" miniSnip
 let g:miniSnip_dirs = [StdpathShim('config') . '/snippets']
