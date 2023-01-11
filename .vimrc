@@ -373,11 +373,6 @@ let g:ale_linters = {
 \ 'typescript' : ['eslint', 'standard']
 \ }
 let g:ale_typescript_standard_executable = 'ts-standard'
-" use ALE autocompletion for certain filetypes
-augroup ALEComplete
-	autocmd!
-	" autocmd FileType tex setlocal omnifunc=ale#completion#OmniFunc
-augroup END
 
 "" lsp
 let g:lsp_fold_enabled = 0
@@ -388,13 +383,13 @@ let g:lsp_diagnostics_virtual_text_enabled = 0
 let g:lsp_inlay_hints_enabled = exists('*prop_add')
 let g:lsp_inlay_hints_delay = 200
 "let g:lsp_inlay_hints_mode = 
-set omnifunc=lsp#complete
-set tagfunc=lsp#tag#tagfunc
 let g:lsp_settings = {
 \ 'clangd': {'cmd': ['clangd', '--background-index', '--cross-file-rename', '--header-insertion=never']},
 \ 'efm-langserver': {'disabled': v:false}
 \ }
 let g:lsp_settings_enable_suggestions = 0
+set omnifunc=lsp#complete
+set tagfunc=lsp#tag#tagfunc
 augroup LSPComplete
 	autocmd!
 	autocmd FileType * setlocal omnifunc=lsp#complete
