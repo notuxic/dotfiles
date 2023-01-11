@@ -354,7 +354,6 @@ augroup vimtexClientServer
 augroup END
 
 "" ale
-"set omnifunc=ale#completion#OmniFunc
 let g:ale_disable_lsp = 1
 let g:ale_lsp_suggestions = 1
 let g:ale_set_loclist = 0
@@ -390,12 +389,16 @@ let g:lsp_inlay_hints_enabled = exists('*prop_add')
 let g:lsp_inlay_hints_delay = 200
 "let g:lsp_inlay_hints_mode = 
 set omnifunc=lsp#complete
-set tagfunc=lsp#tagfunc
+set tagfunc=lsp#tag#tagfunc
 let g:lsp_settings = {
 \ 'clangd': {'cmd': ['clangd', '--background-index', '--cross-file-rename', '--header-insertion=never']},
 \ 'efm-langserver': {'disabled': v:false}
 \ }
 let g:lsp_settings_enable_suggestions = 0
+augroup LSPComplete
+	autocmd!
+	autocmd FileType * setlocal omnifunc=lsp#complete
+augroup END
 
 "" vimspector
 if has('python3')
