@@ -1,5 +1,11 @@
 Xcursor.theme: xcursor-breeze
 
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.autohint: 1
+Xft.hintstyle: hintslight
+Xft.rgba: rgb
+
 
 !!! xterm
 XTerm*termName: xterm-256color
