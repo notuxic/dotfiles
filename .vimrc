@@ -363,6 +363,7 @@ let g:ale_sign_error = ''
 let g:ale_sign_warning = ''
 let g:ale_sign_info = ''
 let g:ale_floating_window_border = ['│', '─', '┌', '┐', '┘', '└']
+let g:ale_virtualtext_cursor = 0
 let g:ale_linters = {
 \ 'dart'       : ['analysis_server'],
 \ 'go'         : ['gofmt', 'golint', 'govet', 'gopls'],
@@ -384,8 +385,12 @@ let g:lsp_fold_enabled = 0
 let g:lsp_semantic_enabled = 0
 let g:lsp_document_highlight_delay = 200
 let g:lsp_document_code_action_signs_enabled = 0
+let g:lsp_diagnostics_virtual_text_enabled = 0
+let g:lsp_inlay_hints_enabled = exists('*prop_add')
+let g:lsp_inlay_hints_delay = 200
+"let g:lsp_inlay_hints_mode = 
 set omnifunc=lsp#complete
-"set tagfunc=lsp#tagfunc
+set tagfunc=lsp#tagfunc
 let g:lsp_settings = {
 \ 'clangd': {'cmd': ['clangd', '--background-index', '--cross-file-rename', '--header-insertion=never']},
 \ 'efm-langserver': {'disabled': v:false}
