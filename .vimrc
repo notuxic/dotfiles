@@ -462,12 +462,14 @@ augroup colorNeoSolarized
 	autocmd ColorScheme NeoSolarized highlight SpellLocal cterm=underline ctermul=6
 	autocmd ColorScheme NeoSolarized highlight clear SpecialKey
 	autocmd ColorScheme NeoSolarized highlight link SpecialKey Comment
+	autocmd ColorScheme NeoSolarized highlight clear NonText
+	autocmd ColorScheme NeoSolarized highlight link NonText Comment
 	autocmd ColorScheme NeoSolarized highlight ToolbarLine ctermbg=10 guibg=#586e75
 augroup END
 colorscheme NeoSolarized
 
 "" set whitespace hints
-set showbreak=\\uf63d
+let &showbreak = "\uf63d"
 augroup listChars
 	autocmd!
 	autocmd OptionSet shiftwidth setlocal listchars=tab:\\u2506\ ,trail:\\u00b7,extends:\\uf63d,precedes:\\uf63c
