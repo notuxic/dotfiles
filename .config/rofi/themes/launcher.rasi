@@ -1,0 +1,140 @@
+* {
+	// Solarized colors
+	base03:  rgba (   0,  43,  54, 1.0 );
+	base02:  rgba (   7,  54,  66, 1.0 );
+	base01:  rgba (  88, 110, 117, 1.0 );
+	base00:  rgba ( 101, 123, 131, 1.0 );
+	base0:   rgba ( 131, 148, 150, 1.0 );
+	base1:   rgba ( 147, 161, 161, 1.0 );
+	base2:   rgba ( 238, 232, 213, 1.0 );
+	base3:   rgba ( 253, 246, 227, 1.0 );
+	yellow:  rgba ( 181, 137,   0, 1.0 );
+	orange:  rgba ( 203,  75,  22, 1.0 );
+	red:     rgba ( 220,  50,  47, 1.0 );
+	magenta: rgba ( 211,  54, 130, 1.0 );
+	violet:  rgba ( 108, 113, 196, 1.0 );
+	blue:    rgba (  38, 139, 210, 1.0 );
+	cyan:    rgba (  42, 161, 152, 1.0 );
+	green:   rgba ( 133, 153,   0, 1.0 );
+}
+
+
+window {
+	cursor: pointer;
+	/* font: "Hack Nerd Font 11"; */
+	location: south west;
+	height: 100%;
+	width: 30%;
+	border: 2px;
+	border-color: @cyan;
+	background-color: @base03;
+}
+
+
+mainbox {
+	background-color: inherit;
+	spacing: 0px;
+}
+
+
+inputbar {
+	background-color: inherit;
+	spacing: 0px;
+	children: [prompt, textbox-prompt-separator, entry];
+}
+
+
+prompt {
+	padding: 0 0.5em 0 0.5em;
+	background-color: @base1;
+	text-color: @base3;
+}
+
+
+entry {
+	padding: 0 0.5em 0 0.5em;
+	background-color: @base02;
+	text-color: @base1;
+	placeholder-color: @base01;
+	placeholder: "Filter...";
+}
+
+
+textbox-prompt-separator {
+	expand: false;
+	background-color: @base02;
+	text-color: @base1;
+	content: "";
+}
+
+
+listview {
+	background-color: inherit;
+	spacing: 0px;
+}
+
+
+element {
+	background-color: inherit;
+	spacing: 0px;
+	children: [element-icon, textbox-element-separator, element-text];
+}
+
+
+element-icon {
+	padding: 0em 0.5em 0em 0.5em;
+	background-color: @base00;
+}
+element-icon.alternate {
+	background-color: @base01;
+}
+element-icon.selected {
+	background-color: @base1;
+}
+
+
+element-text {
+	padding: 0em 0.5em 0em 0.5em;
+	background-color: inherit;
+	text-color: @base0;
+	highlight: underline;
+}
+element-text.selected {
+	background-color: @base02;
+}
+
+
+textbox-element-separator {
+	expand: false;
+	background-color: @base03;
+	text-color: @base00;
+	content: "";
+}
+textbox-element-separator.alternate {
+	background-color: @base03;
+	text-color: @base01;
+}
+textbox-element-separator.selected {
+	background-color: @base02;
+	text-color: @base1;
+}
+
+
+mode-switcher {
+	background-color: inherit;
+	spacing: 0px;
+}
+
+button {
+	background-color: @base00;
+	text-color: @base3;
+}
+button.selected {
+	background-color: @base1;
+}
+
+
+configuration {
+	drun-display-format: "{name} [<span weight='light' size='small' foreground='#586e75'><i>({generic})</i></span>]";
+}
+

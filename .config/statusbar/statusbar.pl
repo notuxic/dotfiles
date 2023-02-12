@@ -12,10 +12,10 @@ my $dzen2_cmd = 'dzen2 -fn "Hack Nerd Font-11" -h 18 -bg \#002b36 -fg \#fdf6e3 -
 # 12pt -> 19h 9.5w
 # 13pt -> 20h 10w
 
-my $workspace_pre = '^bg(#93a1a1) 舘 ^fg(#93a1a1)^bg()';
+my $workspace_pre = '^bg(#93a1a1)^ca(1, rofi -show drun)^ca(3, rofi -show window) 舘 ^ca()^ca()^fg(#93a1a1)^bg()';
 my $workspace_post = '';
 my $status_pre = '';
-my $status_post = '^fg(#657b83)^fg()^bg(#657b83) 襤 ';
+my $status_post = '^fg(#657b83)^fg()^bg(#657b83)^ca(1, rofi -show Power-Menu -modes "Power-Menu:~/.config/rofi/power-menu.sh" -theme-str "window { location: south east; width: 20%; }") 襤 ^ca()';
 
 my %workspace_icons_inactive = (
 	'home1' => '',

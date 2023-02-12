@@ -90,3 +90,14 @@ Sxiv.background: #002B36
 Sxiv.foreground: #657b83
 Sxiv.font: Hack Nerd Font-10
 
+
+!!! i3lock-xrdb
+i3lock.Lockscreen.background.color: #002b36
+i3lock.Lockscreen.ring.normal.color: #657b83
+i3lock.Lockscreen.ring.fail.color: #dc322f
+i3lock.Lockscreen.interior*color: #00000000
+i3lock.Lockscreen.border*color: #00000000
+i3lock.Lockscreen.font*color: #00000000
+i3lock.Lockscreen.keypress.color: #93a1a1
+i3lock.Lockscreen.font: -*-hack-medium-r-*-*-25-
+

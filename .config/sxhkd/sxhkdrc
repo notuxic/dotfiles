@@ -21,6 +21,10 @@ super + alt + shift + r
 ctrl + Escape
 	xkill
 
+# power menu
+super + Escape
+	rofi -show Power-Menu -modes "Power-Menu:$HOME/.config/rofi/power-menu.sh" -theme-str "window \{ location: south east; width: 20%; \}"
+
 #
 # bspwm hotkeys
 #
