@@ -129,13 +129,11 @@ Plug 'xolox/vim-session'
 "" vcs diff hints
 Plug 'mhinz/vim-signify'
 "" smart tab completion
-Plug 'ajh17/VimCompletesMe'
+Plug 'lifepillar/vim-mucomplete'
 "" .editorconfig support
 Plug 'editorconfig/editorconfig-vim'
 "" directory-local config
 Plug 'embear/vim-localvimrc'
-"" detect and set indent options
-"Plug 'tpope/vim-sleuth'
 "" auto-close pairs
 Plug 'cohama/lexima.vim'
 
@@ -241,10 +239,16 @@ let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
 let g:signify_sign_delete_first_line = ''
 
-" vimcompletesme
-let g:vcm_direction = 'p'
-"imap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Plug>vim_completes_me_forward"
-"imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<Plug>vim_completes_me_backward"
+"" mucomplete
+set completeopt+=menuone
+let g:mucomplete#no_mappins = 1
+let g:mucomplete#chains = {
+\ 'default': ['path', 'omni', 'c-p']
+\ }
+let g:mucomplete#can_complete = extend({
+\ 'rust': { 'omni': { t -> t =~# '\m\(\k\|\S\.\|\S::\)$' } },
+\ 'java': { 'omni': { t -> t =~# '\m\(\k\|\S\.\)$' } }
+\ }, g:mucomplete#can_complete, 'keep')
 
 "" editorconfig
 let g:EditorConfig_core_mode = 'vim_core'
@@ -272,6 +276,24 @@ call lexima#add_rule({
 \ 'input': '<CR>',
 \ 'input_after': '<CR>\\end{\1}',
 \ 'at': '^.*\\begin{\([^}]*\)}\({[^}]*}\)*\(\[.*\]\)*\%#$',
+\ 'with_submatch': 1
+\ })
+call lexima#add_rule({
+\ 'filetype': 'tex',
+\ 'char': '<CR>',
+\ 'delete': 1,
+\ 'input': '}<CR>',
+\ 'input_after': '<CR>\\end{\1}',
+\ 'at': '^.*\\begin{\([^}]*\)\(}{[^}]*\)*\%#}$',
+\ 'with_submatch': 1
+\ })
+call lexima#add_rule({
+\ 'filetype': 'tex',
+\ 'char': '<CR>',
+\ 'delete': 1,
+\ 'input': ']<CR>',
+\ 'input_after': '<CR>\\end{\1}',
+\ 'at': '^.*\\begin{\([^}]*\)\(}{[^}]*\)*}\(\[.*\)*\%#\]$',
 \ 'with_submatch': 1
 \ })
 call lexima#add_rule({
@@ -346,7 +368,7 @@ let g:vimtex_root_markers = ['.latexmkrc', '.git/']
 augroup vimtexMisc
 	autocmd!
 	autocmd FileType tex let b:surround_{char2nr('e')} = "\\begin{\1\\begin{\1\n\t\r\n\\end{\1\r}.*\r\1}"
-	autocmd FileType tex let b:vcm_omni_pattern = '\(\\\k*\|{\k*\)\k*$'
+	"autocmd FileType tex let b:vcm_omni_pattern = '\(\\\k*\|{\k*\)\k*$'
 augroup END
 augroup vimtexClientServer
 	autocmd!
@@ -366,7 +388,7 @@ let g:ale_virtualtext_cursor = 0
 let g:ale_linters = {
 \ 'dart'       : ['analysis_server'],
 \ 'go'         : ['gofmt', 'golint', 'govet', 'gopls'],
-\ 'java'       : ['javalsp'],
+\ 'java'       : ['javac', 'eclipselsp'],
 \ 'python'     : ['pylint', 'pyright'],
 \ 'rust'       : ['cargo', 'analyzer'],
 \ 'tex'        : ['texlab', 'chktex', 'lacheck'],
@@ -382,9 +404,10 @@ let g:lsp_document_code_action_signs_enabled = 0
 let g:lsp_diagnostics_virtual_text_enabled = 0
 let g:lsp_inlay_hints_enabled = exists('*prop_add')
 let g:lsp_inlay_hints_delay = 200
-"let g:lsp_inlay_hints_mode = 
+"let g:lsp_inlay_hints_mode =
 let g:lsp_settings = {
 \ 'clangd': {'cmd': ['clangd', '--background-index', '--cross-file-rename', '--header-insertion=never']},
+\ 'eclipse-jdt-ls': { 'cmd': ['jdtls']},
 \ 'efm-langserver': {'disabled': v:false}
 \ }
 let g:lsp_settings_enable_suggestions = 0
@@ -553,6 +576,10 @@ vmap <C-Left> <Plug>MoveBlockLeft
 "" grepper
 nnoremap <Leader>g :Grepper<CR>
 nnoremap <Leader>G :Grepper -dir repo<CR>
+
+"" mucomplete
+inoremap <Tab> <Plug>(MUcompleteFwd)
+inoremap <S-Tab> <Plug>(MUcompleteBwd)
 
 "" ale
 nnoremap <silent> <Leader>aA :ALECodeAction<CR>
