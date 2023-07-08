@@ -488,6 +488,10 @@ augroup colorNeoSolarized
 	autocmd ColorScheme NeoSolarized highlight clear NonText
 	autocmd ColorScheme NeoSolarized highlight link NonText Comment
 	autocmd ColorScheme NeoSolarized highlight ToolbarLine ctermbg=10 guibg=#586e75
+	autocmd ColorScheme NeoSolarized highlight clear lspInlayHintsType
+	autocmd ColorScheme NeoSolarized highlight link lspInlayHintsType Comment
+	autocmd ColorScheme NeoSolarized highlight clear lspInlayHintsParameter
+	autocmd ColorScheme NeoSolarized highlight link lspInlayHintsParameter Comment
 augroup END
 colorscheme NeoSolarized
 
