@@ -28,7 +28,7 @@ set font "Hack Nerd Font 10"
 
 # zathura config
 
-set index-fb "#839496"
+set index-fg "#839496"
 set index-bg "#002B36"
 set index-active-fg "#EEE8D5"
 set index-active-bg "#586E75"
@@ -65,4 +65,10 @@ set selection-clipboard primary
 set selection-notification true
 
 set synctex true
+
+
+# mappings
+
+map <Left> navigate previous
+map <Right> navigate next
 
