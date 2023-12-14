@@ -195,11 +195,8 @@ let g:airline#extensions#lsp#enabled = 1
 let g:airline#extensions#lsp#error_symbol = ''
 let g:airline#extensions#lsp#warning_symbol = ''
 let g:airline#extensions#lsp#show_line_numbers = 1
-"
+
 let g:airline#extensions#branch#enabled = 1
-"let g:airline#extensions#branch#displayed_head_limit = 10
-"let g:airline_symbols.dirty = ''
-"let g:airline_symbols.notexists = ''
 
 let g:airline#extensions#hunks#enabled = 0
 let g:airline#extensions#hunks#non_zero_only = 1
@@ -231,7 +228,6 @@ let g:session_autosave = 'yes'
 let g:session_command_aliases = 1
 
 "" signify
-"let g:signify_priority = 10
 let g:signify_line_highlight = 0
 let g:signify_sign_show_count = 1
 let g:signify_sign_add = '+'
@@ -241,13 +237,18 @@ let g:signify_sign_delete_first_line = ''
 
 "" mucomplete
 set completeopt+=menuone
-let g:mucomplete#no_mappins = 1
+let g:mucomplete#no_mappings = 1
 let g:mucomplete#chains = {
-\ 'default': ['path', 'omni', 'c-p']
+\ 'default': ['path', 'omni', 'c-p'],
+\ 'rust': ['path', 'omni'],
+\ 'typescript': ['path', 'omni'],
+\ 'typescriptreact': ['path', 'omni']
 \ }
 let g:mucomplete#can_complete = extend({
 \ 'rust': { 'omni': { t -> t =~# '\m\(\k\|\S\.\|\S::\)$' } },
-\ 'java': { 'omni': { t -> t =~# '\m\(\k\|\S\.\)$' } }
+\ 'java': { 'omni': { t -> t =~# '\m\(\k\|\S\.\)$' } },
+\ 'typescript': { 'omni': { t -> t =~# '\m\%(\k\|\S\.\)$' } },
+\ 'typescriptreact': { 'omni': { t -> t =~# '\m\%(\k\|\S\.\)$' } }
 \ }, g:mucomplete#can_complete, 'keep')
 
 "" editorconfig
@@ -297,7 +298,7 @@ call lexima#add_rule({
 \ 'with_submatch': 1
 \ })
 call lexima#add_rule({
-\ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache'],
+\ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache', 'typescriptreact'],
 \ 'char': '>',
 \ 'input_after': '</\1>',
 \ 'at': '<\([0-9a-zA-Z_.-]\+\)[^>]*\%#',
@@ -305,7 +306,7 @@ call lexima#add_rule({
 \ 'with_submatch': 1
 \ })
 call lexima#add_rule({
-\ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache'],
+\ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache', 'typescriptreact'],
 \ 'char': '<CR>',
 \ 'input_after': '<CR>',
 \ 'at': '<\([0-9a-zA-Z_.-]\+\)[^/>]*>\%#</\1>'
@@ -341,18 +342,17 @@ let g:gutentags_exclude_filetypes = []
 let g:gutentags_background_update = 1
 let g:gutentags_cache_dir = StdpathShim('data') . '/tags'
 let g:gutentags_ctags_executable = 'ctags'
-"let g:gutentags_ctags_tagfile = 'tags'
 
 "" miniSnip
 let g:miniSnip_dirs = [StdpathShim('config') . '/snippets']
 let g:miniSnip_local = '.lvim/snippets'
 let g:miniSnip_trigger = '<C-Space>'
 let g:miniSnip_extends = {
-\	'cpp': ['c'],
-\   'html': ['xhtml'],
-\   'html.mustache': ['xhtml'],
-\   'plaintex': ['tex'],
-\   'latex': ['tex']
+\ 'cpp': ['c'],
+\ 'html': ['xhtml'],
+\ 'html.mustache': ['xhtml'],
+\ 'plaintex': ['tex'],
+\ 'latex': ['tex']
 \ }
 
 "" vimtex
@@ -368,7 +368,6 @@ let g:vimtex_root_markers = ['.latexmkrc', '.git/']
 augroup vimtexMisc
 	autocmd!
 	autocmd FileType tex let b:surround_{char2nr('e')} = "\\begin{\1\\begin{\1\n\t\r\n\\end{\1\r}.*\r\1}"
-	"autocmd FileType tex let b:vcm_omni_pattern = '\(\\\k*\|{\k*\)\k*$'
 augroup END
 augroup vimtexClientServer
 	autocmd!
@@ -395,6 +394,10 @@ let g:ale_linters = {
 \ 'typescript' : ['eslint', 'standard']
 \ }
 let g:ale_typescript_standard_executable = 'ts-standard'
+augroup aleMisc
+	autocmd!
+	autocmd FileType ale-preview setl wrap
+augroup END
 
 "" lsp
 let g:lsp_fold_enabled = 0
@@ -404,7 +407,9 @@ let g:lsp_document_code_action_signs_enabled = 0
 let g:lsp_diagnostics_virtual_text_enabled = 0
 let g:lsp_inlay_hints_enabled = exists('*prop_add')
 let g:lsp_inlay_hints_delay = 200
-"let g:lsp_inlay_hints_mode =
+let g:lsp_inlay_hints_mode = {
+\ 'normal': ['!curline'],
+\}
 let g:lsp_settings = {
 \ 'clangd': {'cmd': ['clangd', '--background-index', '--cross-file-rename', '--header-insertion=never']},
 \ 'eclipse-jdt-ls': { 'cmd': ['jdtls']},
@@ -517,9 +522,6 @@ endif
 
 """" Misc
 
-"filetype on
-"filetype plugin on
-"syntax enable
 set encoding=utf8
 
 "" filetype dialect defaults
@@ -636,7 +638,6 @@ if has('python3')
 	nnoremap <silent> <F2> :call vimspector#ToggleBreakpoint({'logMessage': input('message: ')})<CR>
 	nnoremap <silent> <F3> :call vimspector#ToggleBreakpoint({'condition': input('condition: ')})<CR>
 	nnoremap <silent> <F4> <Plug>VimspectorToggleBreakpoint
-	"nnoremap <silent> <Leader><F4> :call vimspector#ToggleBreakpointViewBreakpoint()<CR>
 	nnoremap <silent> <F5> <Plug>VimspectorRunToCursor
 	nnoremap <silent> <Leader><F5> <Plug>VimspectorGoToCurrentLine
 	nnoremap <silent> <F6> <Plug>VimspectorStepOut
@@ -648,7 +649,6 @@ if has('python3')
 	nnoremap <silent> <Leader><F10> <Plug>VimspectorStop
 	nnoremap <F11> :VimspectorEval<Space>
 	vnoremap <silent> <F11> <Plug>VimspectorBalloonEval
-	"nnoremap <silent> <Leader><F11> :call setqflist(vimspector#GetBreakpointsAsQuickFix()) <Bar> copen<CR>
 	nnoremap <silent> <Leader><F11> <Plug>VimspectorBreakpoints
 	nnoremap <silent> <F12> :VimspectorWatch <C-R><C-W><CR>
 	vnoremap <silent> <F12> <Esc>:VimspectorWatch <C-R>*<CR>
