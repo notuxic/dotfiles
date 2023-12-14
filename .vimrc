@@ -334,15 +334,6 @@ let g:grepper.dir = 'cwd'
 let g:grepper.side = 0
 let g:grepper.tools = ['rg', 'grep']
 
-
-"" gutentags
-let g:gutentags_modules = ['ctags']
-let g:gutentags_project_root = ['.git', '.lvim', '.lvimrc']
-let g:gutentags_exclude_filetypes = []
-let g:gutentags_background_update = 1
-let g:gutentags_cache_dir = StdpathShim('data') . '/tags'
-let g:gutentags_ctags_executable = 'ctags'
-
 "" miniSnip
 let g:miniSnip_dirs = [StdpathShim('config') . '/snippets']
 let g:miniSnip_local = '.lvim/snippets'
