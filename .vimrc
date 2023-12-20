@@ -129,7 +129,10 @@ Plug 'xolox/vim-session'
 "" vcs diff hints
 Plug 'mhinz/vim-signify'
 "" smart tab completion
-Plug 'lifepillar/vim-mucomplete'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'notuxic/asyncomplete-file.vim'
+Plug 'notuxic/asyncomplete-tags.vim'
 "" .editorconfig support
 Plug 'editorconfig/editorconfig-vim'
 "" directory-local config
@@ -235,22 +238,6 @@ let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
 let g:signify_sign_delete_first_line = ''
 
-"" mucomplete
-set completeopt+=menuone
-let g:mucomplete#no_mappings = 1
-let g:mucomplete#chains = {
-\ 'default': ['path', 'omni', 'c-p'],
-\ 'rust': ['path', 'omni'],
-\ 'typescript': ['path', 'omni'],
-\ 'typescriptreact': ['path', 'omni']
-\ }
-let g:mucomplete#can_complete = extend({
-\ 'rust': { 'omni': { t -> t =~# '\m\(\k\|\S\.\|\S::\)$' } },
-\ 'java': { 'omni': { t -> t =~# '\m\(\k\|\S\.\)$' } },
-\ 'typescript': { 'omni': { t -> t =~# '\m\%(\k\|\S\.\)$' } },
-\ 'typescriptreact': { 'omni': { t -> t =~# '\m\%(\k\|\S\.\)$' } }
-\ }, g:mucomplete#can_complete, 'keep')
-
 "" editorconfig
 let g:EditorConfig_core_mode = 'vim_core'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*']
@@ -267,6 +254,8 @@ let g:localvimrc_python3_enable = 0
 
 "" lexima
 let g:lexima_ctrlh_as_backspace = 1
+let g:lexima_no_default_rules = 1
+call lexima#set_default_rules()
 call lexima#add_rule({'filetype':'scheme', 'char':"'", 'input_after':''})
 call lexima#add_rule({'filetype':'tex', 'char':'$', 'input_after':'$'})
 call lexima#add_rule({'filetype':'tex', 'char':'$', 'at':'\%#\$', 'leave':1})
@@ -364,6 +353,21 @@ augroup vimtexClientServer
 	autocmd!
 	autocmd FileType tex if empty(v:servername) && exists('*remote_startserver') | call remote_startserver('tex/' . lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), g:vimtex_root_markers)) | endif
 augroup END
+
+"" asyncomplete
+let g:asyncomplete_auto_popup = 0
+let g:asyncomplete_auto_completeopt = 0
+"let g:asyncomplete_log_file = '/tmp/asyncomplete.log'
+call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+\ 'name': 'file',
+\ 'allowlist': ['*'],
+\ 'completor': function('asyncomplete#sources#file#completor')
+\ }))
+call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
+\ 'name': 'tags',
+\ 'allowlist': ['*'],
+\ 'completor': function('asyncomplete#sources#tags#completor')
+\ }))
 
 "" ale
 let g:ale_disable_lsp = 1
@@ -554,7 +558,7 @@ set foldmethod=manual
 set sessionoptions+=localoptions
 set scrolloff=1
 set splitright splitbelow
-
+set completeopt=menuone,noinsert,noselect,popup
 
 
 "  Plugin-Keymaps
@@ -574,9 +578,14 @@ vmap <C-Left> <Plug>MoveBlockLeft
 nnoremap <Leader>g :Grepper<CR>
 nnoremap <Leader>G :Grepper -dir repo<CR>
 
-"" mucomplete
-inoremap <Tab> <Plug>(MUcompleteFwd)
-inoremap <S-Tab> <Plug>(MUcompleteBwd)
+"" asyncomplete
+function! s:check_whitespace() abort
+	let col = col('.') - 1
+	return !col || getline('.')[col-1] =~ '\s'
+endfunction
+inoremap <silent> <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_whitespace() ? "\<Tab>" : asyncomplete#force_refresh()
+inoremap <silent> <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <silent> <expr> <CR> pumvisible() ? asyncomplete#close_popup() : "\<C-r>=lexima#expand('<Lt>CR>', 'i')\<CR>"
 
 "" ale
 nnoremap <silent> <Leader>aA :ALECodeAction<CR>
