@@ -16,34 +16,9 @@ if has('unix')
 endif
 
 
-"" implement `stdpath` shim
-function StdpathShim(what)
-	if exists('*stdpath')
-		return stdpath(a:what)
-	endif
-
-	if a:what ==# 'cache'
-		if has('win32')
-			return $TEMP . '\vim'
-		endif
-		return $HOME . '/.cache/vim'
-	elseif a:what ==# 'config'
-		if has('win32')
-			return $LOCALAPPDATA . '\vim'
-		endif
-		return $HOME . '/.vim'
-	elseif a:what ==# 'data'
-		if has('win32')
-			return $LOCALAPPDATA . '\vim-data'
-		endif
-		return $HOME . '/.local/share/vim'
-	endif
-endfunc
-
-
 "" auto-install plugin-manager and plugins
-if empty(glob(StdpathShim('config') . '/autoload/plug.vim'))
-	:call execute('!curl --create-dirs --silent --show-error --fail --location --output "' . StdpathShim('config') . '/autoload/plug.vim" "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"', 'silent')
+if empty(glob(expand('~/.vim/autoload/plug.vim')))
+	:call execute('!curl --create-dirs --silent --show-error --fail --location --output "' . expand('~/.vim/autoload/plug.vim') . '" "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"', 'silent')
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -66,7 +41,7 @@ let g:ale_hover_to_floating_preview = 1
 "  Plugins
 """""""""""""
 
-call plug#begin(StdpathShim('data') . '/plugged')
+call plug#begin(expand('~/.local/share/vim/plugged'))
 
 """" Dependencies
 
@@ -129,10 +104,7 @@ Plug 'xolox/vim-session'
 "" vcs diff hints
 Plug 'mhinz/vim-signify'
 "" smart tab completion
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'notuxic/asyncomplete-file.vim'
-Plug 'notuxic/asyncomplete-tags.vim'
+Plug 'lifepillar/vim-mucomplete'
 "" .editorconfig support
 Plug 'editorconfig/editorconfig-vim'
 "" directory-local config
@@ -159,10 +131,7 @@ Plug 'lervag/vimtex'
 "" linting, fixing, ...
 Plug 'dense-analysis/ale'
 "" lsp client
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
-"" ale + vim-lsp integration
-Plug 'rhysd/vim-lsp-ale'
+Plug 'yegappan/lsp'
 
 if has('python3')
 	"" dap client
@@ -178,7 +147,6 @@ call plug#end()
 
 "" airline
 let g:airline#extensions#tmuxline#enabled = 0
-let g:airline#extensions#fern#enabled = 1
 let g:airline#extensions#fugitiveline#enabled = 1
 let g:airline#extensions#gutentags#enabled = 1
 let g:airline#extensions#obession#enabled = 1
@@ -194,11 +162,6 @@ let g:airline#extensions#ale#error_symbol = ''
 let g:airline#extensions#ale#warning_symbol = ''
 let g:airline#extensions#ale#show_line_numbers = 1
 
-let g:airline#extensions#lsp#enabled = 1
-let g:airline#extensions#lsp#error_symbol = ''
-let g:airline#extensions#lsp#warning_symbol = ''
-let g:airline#extensions#lsp#show_line_numbers = 1
-
 let g:airline#extensions#branch#enabled = 1
 
 let g:airline#extensions#hunks#enabled = 0
@@ -208,27 +171,33 @@ let g:airline#extensions#hunks#hunk_symbols = ['+', '~', '-']
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
 
+
 "" tmuxline
 let g:tmuxline_theme = 'airline'
 let g:tmuxline_preset = 'powerline'
 
+
 "" promptline
 let g:promptline_theme = 'airline'
 
+
 "" wordmotion
 let g:wordmotion_prefix = '<Space>'
+
 
 "" move
 let g:move_map_keys = 0
 let g:move_past_end_of_line = 0
 
+
 "" session
-let g:session_directory = StdpathShim('data') . '/sessions'
+let g:session_directory = expand('~/.local/share/vim/sessions')
 let g:session_default_name = 'default'
 let g:session_default_overwrite = 1
 let g:session_autoload = 'no'
 let g:session_autosave = 'yes'
 let g:session_command_aliases = 1
+
 
 "" signify
 let g:signify_line_highlight = 0
@@ -238,9 +207,11 @@ let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
 let g:signify_sign_delete_first_line = ''
 
+
 "" editorconfig
 let g:EditorConfig_core_mode = 'vim_core'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*']
+
 
 "" localvimrc
 let g:localvimrc_enable = 1
@@ -248,9 +219,10 @@ let g:localvimrc_name = ['.lvimrc', '.lvim/lvimrc']
 let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 1
 let g:localvimrc_persistent = 1
-let g:localvimrc_persistence_file = StdpathShim('data') . '/lvimrc.persistent'
+let g:localvimrc_persistence_file = expand('~/.local/share/vim/lvimrc.persistent')
 let g:localvimrc_python2_enable = 0
 let g:localvimrc_python3_enable = 0
+
 
 "" lexima
 let g:lexima_ctrlh_as_backspace = 1
@@ -259,7 +231,10 @@ call lexima#set_default_rules()
 call lexima#add_rule({'filetype':'scheme', 'char':"'", 'input_after':''})
 call lexima#add_rule({'filetype':'tex', 'char':'$', 'input_after':'$'})
 call lexima#add_rule({'filetype':'tex', 'char':'$', 'at':'\%#\$', 'leave':1})
-call lexima#add_rule({'filetype':'tex', 'char':'<BS>',  'at':'\$\%#\$', 'input':'<BS>', 'delete':1})
+call lexima#add_rule({'filetype':'tex', 'char':'<BS>', 'at':'\$\%#\$', 'input':'<BS>', 'delete':1})
+call lexima#add_rule({'filetype':'tex', 'char':'``', 'input_after': "''"})
+call lexima#add_rule({'filetype':'tex', 'char':"'", 'at':"\\%#''", 'leave':2})
+call lexima#add_rule({'filetype':'tex', 'char':'<BS>', 'at': "``\\%#''", 'input':'<BS><BS>', 'delete':2})
 call lexima#add_rule({
 \ 'filetype': 'tex',
 \ 'char': '<CR>',
@@ -309,6 +284,7 @@ call lexima#add_rule({
 \ 'with_submatch': 1
 \ })
 
+
 "" grepper
 runtime plugin/grepper.vim
 let g:grepper.quickfix = 0
@@ -323,8 +299,9 @@ let g:grepper.dir = 'cwd'
 let g:grepper.side = 0
 let g:grepper.tools = ['rg', 'grep']
 
+
 "" miniSnip
-let g:miniSnip_dirs = [StdpathShim('config') . '/snippets']
+let g:miniSnip_dirs = [expand('~/.vim/snippets')]
 let g:miniSnip_local = '.lvim/snippets'
 let g:miniSnip_trigger = '<C-Space>'
 let g:miniSnip_extends = {
@@ -334,6 +311,7 @@ let g:miniSnip_extends = {
 \ 'plaintex': ['tex'],
 \ 'latex': ['tex']
 \ }
+
 
 "" vimtex
 let g:vimtex_compiler_method = 'latexmk'
@@ -345,29 +323,26 @@ let g:vimtex_quickfix_mode = 2
 let g:vimtex_syntax_conceal_disable = 1
 let g:vimtex_toc_enabled = 0
 let g:vimtex_root_markers = ['.latexmkrc', '.git/']
+let g:vimtex_imaps_disabled = ['`']
 augroup vimtexMisc
 	autocmd!
 	autocmd FileType tex let b:surround_{char2nr('e')} = "\\begin{\1\\begin{\1\n\t\r\n\\end{\1\r}.*\r\1}"
 augroup END
 augroup vimtexClientServer
 	autocmd!
-	autocmd FileType tex if empty(v:servername) && exists('*remote_startserver') | call remote_startserver('tex/' . lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), g:vimtex_root_markers)) | endif
+	autocmd FileType tex if empty(v:servername) && exists('*remote_startserver') | call remote_startserver('tex:' . lsp#util#FindNearestRootDir(expand('%:p:h'), g:vimtex_root_markers)) | endif
 augroup END
 
-"" asyncomplete
-let g:asyncomplete_auto_popup = 0
-let g:asyncomplete_auto_completeopt = 0
-"let g:asyncomplete_log_file = '/tmp/asyncomplete.log'
-call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-\ 'name': 'file',
-\ 'allowlist': ['*'],
-\ 'completor': function('asyncomplete#sources#file#completor')
-\ }))
-call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
-\ 'name': 'tags',
-\ 'allowlist': ['*'],
-\ 'completor': function('asyncomplete#sources#tags#completor')
-\ }))
+
+"" mucomplete
+let g:mucomplete#no_mappings = 1
+let g:mucomplete#chains = {
+\	'default': ['path', 'omni', 'c-p']
+\ }
+let g:mucomplete#can_complete = extend({
+\	'rust': { 'omni': { t -> t =~# '\m\(\k\|\S\.\|\S::\)$' } }
+\ }, g:mucomplete#can_complete, 'keep')
+
 
 "" ale
 let g:ale_disable_lsp = 1
@@ -380,9 +355,6 @@ let g:ale_sign_info = ''
 let g:ale_floating_window_border = ['│', '─', '┌', '┐', '┘', '└']
 let g:ale_virtualtext_cursor = 0
 let g:ale_linters = {
-\ 'dart'       : ['analysis_server'],
-\ 'go'         : ['gofmt', 'golint', 'govet', 'gopls'],
-\ 'java'       : ['javac', 'eclipselsp'],
 \ 'python'     : ['pylint', 'pyright'],
 \ 'rust'       : ['cargo', 'analyzer'],
 \ 'tex'        : ['texlab', 'chktex', 'lacheck'],
@@ -394,29 +366,105 @@ augroup aleMisc
 	autocmd FileType ale-preview setl wrap
 augroup END
 
+
 "" lsp
-let g:lsp_fold_enabled = 0
-let g:lsp_semantic_enabled = 0
-let g:lsp_document_highlight_delay = 200
-let g:lsp_document_code_action_signs_enabled = 0
-let g:lsp_diagnostics_virtual_text_enabled = 0
-let g:lsp_inlay_hints_enabled = exists('*prop_add')
-let g:lsp_inlay_hints_delay = 200
-let g:lsp_inlay_hints_mode = {
-\ 'normal': ['!curline'],
-\}
-let g:lsp_settings = {
-\ 'clangd': {'cmd': ['clangd', '--background-index', '--cross-file-rename', '--header-insertion=never']},
-\ 'eclipse-jdt-ls': { 'cmd': ['jdtls']},
-\ 'efm-langserver': {'disabled': v:false}
-\ }
-let g:lsp_settings_enable_suggestions = 0
-set omnifunc=lsp#complete
-set tagfunc=lsp#tag#tagfunc
-augroup LSPComplete
+function! s:SetupLsp()
+	call g:LspOptionsSet({
+\		'aleSupport': v:true,
+\		'autoComplete': v:false,
+\		'autoHighlight': v:false,
+\		'autoHighlightDiags': v:false,
+\		'highlightDiagInline': v:false,
+\		'omniComplete': v:true,
+\		'completionMatcher': 'case',
+\		'outlineOnRight': v:true,
+\		'showDiagWithSigns': v:false,
+\		'showDiagWithVirtualText': v:false,
+\		'showInlayHints': v:true,
+\		'filterCompletionDuplicates': v:true
+\ })
+	call g:LspAddServer([
+\		{
+\			'name': 'clangd',
+\			'filetype': ['c', 'cpp'],
+\			'path': '/usr/bin/clangd',
+\			'args': ['--background-index', '--clang-tidy', '--cross-file-rename', '--header-insertion=never'],
+\			'rootSearch': ['.git/', 'Makefile', 'CMakeLists.txt']
+\		},
+\		{
+\			'name': 'rust-analyzer',
+\			'filetype': ['rust'],
+\			'path': expand('~/.cargo/bin/rust-analyzer'),
+\			'args': [],
+\			'rootSearch': ['Cargo.toml'],
+\			'runIfSearch': ['Cargo.toml'],
+\			'syncInit': v:true,
+\			'initializationOptions': {
+\				'completion': {
+\					'autoimport': {'enable': v:false}
+\				}
+\			}
+\		},
+\		{
+\			'name': 'pyright',
+\			'filetype': ['python'],
+\			'path': '/usr/bin/pyright-langserver',
+\			'args': ['--stdio'],
+\			'rootSearch': ['.git/', '.venv/'],
+\			'workspaceConfig': {
+\				'python': {
+\					'pythonPath': '/usr/bin/python3',
+\					'analysis': {
+\						'useLibraryCodeForTypes': v:true,
+\					}
+\				}
+\			}
+\		},
+\		{
+\			'name': 'tsserver',
+\			'filetype': ['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'typescript.tsx'],
+\			'path': '/usr/bin/tsserver',
+\			'args': ['stdio'],
+\			'rootSearch': ['.git/'],
+\			'initializationOptions': {
+\				'preferences': {
+\					'includeInlayParameterNameHintsWhenArgumentMatchesName': v:true,
+\					'includeInlayParameterNameHints': 'all',
+\					'includeInlayVariableTypeHints': v:true,
+\					'includeInlayPropertyDeclarationTypeHints': v:true,
+\					'includeInlayFunctionParameterTypeHints': v:true,
+\					'includeInlayEnumMemberValueHints': v:true,
+\					'includeInlayFunctionLikeReturnTypeHints': v:true
+\				}
+\			}
+\		},
+\		{
+\			'name': 'texlab',
+\			'filetype': ['tex', 'latex'],
+\			'path': '/usr/bin/texlab',
+\			'args': [],
+\			'rootSearch': g:vimtex_root_markers,
+\			'initializationOptions': {
+\				'diagnostics': 'true'
+\			},
+\			'workspaceConfig': {
+\				'texlab': {
+\					'build': {
+\						'executable': 'latexmk',
+\						'args': [],
+\					}
+\				}
+\			}
+\		}
+\ ])
+endfunction
+
+augroup yeggapanLsp
 	autocmd!
-	autocmd FileType * setlocal omnifunc=lsp#complete
+	autocmd User LspSetup call s:SetupLsp()
+	autocmd User LspAttached setlocal tagfunc=lsp#lsp#TagFunc
 augroup END
+
 
 "" vimspector
 if has('python3')
@@ -464,7 +512,7 @@ if &t_Co > 256 || $COLORTERM =~ '\(truecolor\|24bit\)'
 	set termguicolors
 
 	"" properly support colors inside TMUX
-	if !has('nvim') && !empty($TMUX) && empty(&t_8f)
+	if !empty($TMUX) && empty(&t_8f)
 		let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
 		let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
 	endif
@@ -488,10 +536,10 @@ augroup colorNeoSolarized
 	autocmd ColorScheme NeoSolarized highlight clear NonText
 	autocmd ColorScheme NeoSolarized highlight link NonText Comment
 	autocmd ColorScheme NeoSolarized highlight ToolbarLine ctermbg=10 guibg=#586e75
-	autocmd ColorScheme NeoSolarized highlight clear lspInlayHintsType
-	autocmd ColorScheme NeoSolarized highlight link lspInlayHintsType Comment
-	autocmd ColorScheme NeoSolarized highlight clear lspInlayHintsParameter
-	autocmd ColorScheme NeoSolarized highlight link lspInlayHintsParameter Comment
+	autocmd ColorScheme NeoSolarized highlight clear LspInlayHintsParam
+	autocmd ColorScheme NeoSolarized highlight link LspInlayHintsParameter Comment
+	autocmd ColorScheme NeoSolarized highlight clear LspInlayHintsType
+	autocmd ColorScheme NeoSolarized highlight link LspInlayHintsType Comment
 augroup END
 colorscheme NeoSolarized
 
@@ -558,6 +606,7 @@ set foldmethod=manual
 set sessionoptions+=localoptions
 set scrolloff=1
 set splitright splitbelow
+set wildmenu
 set completeopt=menuone,noinsert,noselect,popup
 
 
@@ -566,26 +615,21 @@ set completeopt=menuone,noinsert,noselect,popup
 
 "" move
 nmap <C-Up> <Plug>MoveLineUp
-vmap <C-Up> <Plug>MoveBlockUp
+xmap <C-Up> <Plug>MoveBlockUp
 nmap <C-Down> <Plug>MoveLineDown
-vmap <C-Down> <Plug>MoveBlockDown
+xmap <C-Down> <Plug>MoveBlockDown
 nmap <C-Right> <Plug>MoveCharRight
-vmap <C-Right> <Plug>MoveBlockRight
+xmap <C-Right> <Plug>MoveBlockRight
 nmap <C-Left> <Plug>MoveCharLeft
-vmap <C-Left> <Plug>MoveBlockLeft
+xmap <C-Left> <Plug>MoveBlockLeft
 
 "" grepper
 nnoremap <Leader>g :Grepper<CR>
 nnoremap <Leader>G :Grepper -dir repo<CR>
 
-"" asyncomplete
-function! s:check_whitespace() abort
-	let col = col('.') - 1
-	return !col || getline('.')[col-1] =~ '\s'
-endfunction
-inoremap <silent> <expr> <Tab> pumvisible() ? "\<C-n>" : <SID>check_whitespace() ? "\<Tab>" : asyncomplete#force_refresh()
-inoremap <silent> <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <silent> <expr> <CR> pumvisible() ? asyncomplete#close_popup() : "\<C-r>=lexima#expand('<Lt>CR>', 'i')\<CR>"
+"" mucomplete
+inoremap <Tab> <Plug>(MUcompleteFwd)
+inoremap <S-Tab> <Plug>(MUcompleteBwd)
 
 "" ale
 nnoremap <silent> <Leader>aA :ALECodeAction<CR>
@@ -601,17 +645,24 @@ nnoremap <Leader>] <Plug>(ale_next_wrap)
 nnoremap <Leader>as :ALESymbolSearch<Space>
 
 "" lsp
-nnoremap <silent> <Leader>la :LspDocumentSwitchSourceHeader<CR>
-nnoremap <Leader>lA <Plug>(lsp-code-action)
-nnoremap <Leader>ld <Plug>(lsp-definition)
-nnoremap <Leader>lD <Plug>(lsp-type-definition)
-nnoremap <Leader>lh <Plug>(lsp-hover)
-nnoremap <Leader>li <Plug>(lsp-implementation)
-nnoremap <Leader>lu <Plug>(lsp-references)
-nnoremap <Leader>lr <Plug>(lsp-rename)
-nnoremap <Leader>= <Plug>(lsp-next-reference)
-nnoremap <Leader>- <Plug>(lsp-previous-reference)
-nnoremap <Leader>ls :LspWorkspaceSymbol<Space>
+nnoremap <silent> <Leader>la :LspSwitchSourceHeader<CR>
+nnoremap <silent> <Leader>lc :LspCodeAction<CR>
+xnoremap <silent> <Leader>lc <Cmd>LspCodeAction<CR>
+nnoremap <silent> <Leader>lC :LspCodeLens<CR>
+nnoremap <silent> <Leader>ld :LspGotoDefinition<CR>
+nnoremap <silent> <Leader>lD :LspGotoTypeDef<CR>
+nnoremap <silent> <Leader>lh :LspHover<CR>
+nnoremap <silent> <Leader>lH :LspShowSignature<CR>
+nnoremap <silent> <Leader>li :LspGotoImpl<CR>
+nnoremap <silent> <Leader>lI :LspGotoDeclaration<CR>
+nnoremap <silent> <Leader>lr :LspRename<CR>
+nnoremap <Leader>ls :LspSymbolSearch<Space>
+nnoremap <silent> <Leader>lS :LspDocumentSymbol<CR>
+nnoremap <silent> <Leader>lu :LspShowReferences<CR>
+nnoremap <silent> <Leader>' :LspSelectionExpand<CR>
+nnoremap <silent> <Leader>; :LspSelectionShrink<CR>
+xnoremap <silent> <Leader>' <Cmd>LspSelectionExpand<CR>
+xnoremap <silent> <Leader>; <Cmd>LspSelectionShrink<CR>
 
 "" padline
 imap <LocalLeader>; <Plug>PadLineAbove
@@ -620,18 +671,18 @@ imap <LocalLeader><CR> <Plug>PadLineAround
 nmap <LocalLeader>; <Plug>PadLineAbove
 nmap <LocalLeader>' <Plug>PadLineBelow
 nmap <LocalLeader><CR> <Plug>PadLineAround
-vmap <LocalLeader>; <Plug>PadBlockAbove
-vmap <LocalLeader>' <Plug>PadBlockBelow
-vmap <LocalLeader><CR> <Plug>PadBlockAround
+xmap <LocalLeader>; <Plug>PadBlockAbove
+xmap <LocalLeader>' <Plug>PadBlockBelow
+xmap <LocalLeader><CR> <Plug>PadBlockAround
 imap <LocalLeader>: <Plug>UnpadLineAbove
 imap <LocalLeader>" <Plug>UnpadLineBelow
 imap <LocalLeader><BS> <Plug>UnpadLineAround
 nmap <LocalLeader>: <Plug>UnpadLineAbove
 nmap <LocalLeader>" <Plug>UnpadLineBelow
 nmap <LocalLeader><BS> <Plug>UnpadLineAround
-vmap <LocalLeader>: <Plug>UnpadBlockAbove
-vmap <LocalLeader>" <Plug>UnpadBlockBelow
-vmap <LocalLeader><BS> <Plug>UnpadBlockAround
+xmap <LocalLeader>: <Plug>UnpadBlockAbove
+xmap <LocalLeader>" <Plug>UnpadBlockBelow
+xmap <LocalLeader><BS> <Plug>UnpadBlockAround
 
 if has('python3')
 	"" vimspector
@@ -648,10 +699,10 @@ if has('python3')
 	nnoremap <silent> <F10> :call vimspector#Reset({'interactive': v:false})<CR>
 	nnoremap <silent> <Leader><F10> <Plug>VimspectorStop
 	nnoremap <F11> :VimspectorEval<Space>
-	vnoremap <silent> <F11> <Plug>VimspectorBalloonEval
+	xnoremap <silent> <F11> <Plug>VimspectorBalloonEval
 	nnoremap <silent> <Leader><F11> <Plug>VimspectorBreakpoints
 	nnoremap <silent> <F12> :VimspectorWatch <C-R><C-W><CR>
-	vnoremap <silent> <F12> <Esc>:VimspectorWatch <C-R>*<CR>
+	xnoremap <silent> <F12> <Esc>:VimspectorWatch <C-R>*<CR>
 	nnoremap <Leader><F12> :VimspectorWatch<Space>
 endif
 
@@ -661,7 +712,7 @@ endif
 """""""""""""
 
 nnoremap Q @q
-vnoremap <silent> Q :norm @q<CR>
+xnoremap <silent> Q :norm @q<CR>
 
 "" support various CTRL maps in terminal
 map  <C-@> <C-Space>
@@ -677,7 +728,7 @@ map! [1;5D <C-Left>
 
 "" select last change
 nnoremap gV `[v`]
-vnoremap ik `[o`]
+xnoremap ik `[o`]
 onoremap ik :<C-u>normal vik<CR>
 onoremap ak :<C-u>normal vikV<CR>
 
@@ -735,7 +786,7 @@ augroup END
 
 "" enable persistent undo
 "" (https://stackoverflow.com/a/22676189)
-let undodirectory = expand(StdpathShim('data') . '/undo')
+let undodirectory = expand('~/.local/share/vim/undo')
 if has('persistent_undo')
 	:call mkdir(undodirectory, "p")
 	let &undodir = undodirectory
