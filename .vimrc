@@ -114,6 +114,8 @@ Plug 'cohama/lexima.vim'
 
 """" Tools
 
+"" fuzzy picker
+Plug 'girishji/scope.vim'
 "" fast grepping
 Plug 'mhinz/vim-grepper'
 "" git commands
@@ -623,6 +625,11 @@ xmap <C-Right> <Plug>MoveBlockRight
 nmap <C-Left> <Plug>MoveCharLeft
 xmap <C-Left> <Plug>MoveBlockLeft
 
+"" scope
+nnoremap <silent> <Leader><Space> :call scope#fuzzy#Buffer()<CR>
+nnoremap <silent> <Leader><C-@> :call scope#fuzzy#File()<CR>
+nnoremap <silent> <LocalLeader><C-@> :call PickLspSymbols()<CR>
+
 "" grepper
 nnoremap <Leader>g :Grepper<CR>
 nnoremap <Leader>G :Grepper -dir repo<CR>
@@ -746,7 +753,6 @@ nnoremap <silent> =l :lclose<CR>
 nnoremap <silent> =L :lopen<CR>
 nnoremap <silent> =w :pclose<CR>
 
-nnoremap <Leader><Space> :buffer<Space>
 "" alternate buffers
 nnoremap <Leader><Tab> <C-^>
 inoremap <LocalLeader><Tab> <C-\><C-O><C-^>
@@ -817,5 +823,76 @@ augroup saveRestoreWinBufView
 	autocmd BufEnter * call AutoRestoreWinView()
 augroup END
 
+
 """" 1st Party
+
+"" pick lsp workspace symbols
+import autoload 'scope/popup.vim'
+def PickLspSymbols()
+	var menu: popup.FilterMenu
+
+	var lspserver = lsp#buffer#CurbufGetServerChecked('workspaceSymbol')
+	if lspserver->empty()
+		echohl WarningMsg | redraw | echomsg 'error: no language-server available!' | echohl None
+		return
+	endif
+
+	def QueryItems(prompt: string): list<dict<any>>
+		var resp: dict<any>
+		try
+			resp = lspserver.rpc('workspace/symbol', {query: prompt})
+		catch
+		endtry
+		if !resp->has_key('result')
+			echohl WarningMsg | redraw | echomsg 'error: language-server not ready yet!' | echohl None
+		return []
+		endif
+
+		return resp['result']->map((_, val): dict<any> => {
+			return {
+				name: val['name'],
+				text: val['name'] .. "\t" .. fnamemodify(lsp#util#LspUriToFile(val['location']['uri']), ':.'),
+				location: val['location'] }
+		})
+	enddef
+
+	def UpdateItems(prompt: string, t: number)
+		if menu.prompt != prompt
+			timer_start(1, function(UpdateItems, [menu.prompt]))
+			return
+		endif
+
+		var items_dict: list<dict<any>> = QueryItems(prompt)
+		menu.SetText(items_dict,
+			(_, _): list<any> => {
+				if prompt == ''
+					return [items_dict, [items_dict]]
+				else
+					return [items_dict, items_dict->matchfuzzypos(prompt, {key: 'name'})]
+				endif
+			}, -1)
+	enddef
+
+	def AcceptItem(key: string, entry: dict<any>, t: number)
+		var cmdmod = {"\<C-j>": ' ', "\<C-v>": 'vertical', "\<C-t>": 'tab'}
+		lspserver.decodeLocation(entry['location'])
+		lsp#util#JumpToLspLocation(entry['location'], cmdmod->get(key, ''))
+		return
+	enddef
+
+	menu = popup.FilterMenu.new('Workspace Symbols',
+		QueryItems(''),
+		(res, key) => {
+			timer_start(1, function(AcceptItem, [key, res]))
+		},
+		(winid, _) => {
+			win_execute(winid, 'syntax match ScopePathSubtle "\v\t.*$"')
+			highlight default link ScopeMenuSubtle Comment
+			highlight default link ScopePathSubtle ScopeMenuSubtle
+		},
+		(lst: list<dict<any>>, prompt: string): list<any> => {
+			timer_start(1, function(UpdateItems, [menu.prompt]))
+			return [[], [[]]]
+		}, null_function, false)
+enddef
 
