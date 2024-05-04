@@ -265,6 +265,12 @@ call lexima#add_rule({
 \ })
 call lexima#add_rule({
 \ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache', 'typescriptreact'],
+\ 'char':'<CR>',
+\ 'at': '<[^>]*\%#/>',
+\ 'input_after':'<CR>'
+\ })
+call lexima#add_rule({
+\ 'filetype': ['xml', 'html', 'xhtml', 'html.mustache', 'typescriptreact'],
 \ 'char': '>',
 \ 'input_after': '</\1>',
 \ 'at': '<\([0-9a-zA-Z_.-]\+\)[^>]*\%#',
@@ -580,7 +586,7 @@ let g:is_chicken = 1
 let g:tex_flavor = 'latex'
 
 "" auto-formatting
-set autoindent smartindent
+set autoindent
 set noexpandtab
 set shiftwidth=4
 set softtabstop=4
