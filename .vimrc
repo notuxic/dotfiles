@@ -429,10 +429,10 @@ function! s:SetupLsp()
 \			}
 \		},
 \		{
-\			'name': 'tsserver',
+\			'name': 'typescriptls',
 \			'filetype': ['javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'typescript.tsx'],
-\			'path': '/usr/bin/tsserver',
-\			'args': ['stdio'],
+\			'path': '/usr/bin/typescript-language-server',
+\			'args': ['--stdio'],
 \			'rootSearch': ['.git/'],
 \			'initializationOptions': {
 \				'preferences': {
