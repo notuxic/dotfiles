@@ -342,6 +342,20 @@ augroup vimtexClientServer
 augroup END
 
 
+"" scope
+call scope#popup#OptionsSet({
+\	'maxheight': min([40, &lines - 8]),
+\	'maxwidth': float2nr(&columns * 0.6)
+\ })
+augroup scopeMisc
+	autocmd!
+	autocmd VimResized * call scope#popup#OptionsSet({
+\		'maxheight': min([40, &lines - 8]),
+\		'maxwidth': float2nr(&columns * 0.6)
+\	})
+augroup END
+
+
 "" mucomplete
 let g:mucomplete#no_mappings = 1
 let g:mucomplete#chains = {
@@ -634,6 +648,7 @@ xmap <C-Left> <Plug>MoveBlockLeft
 "" scope
 nnoremap <silent> <Leader><Space> :call scope#fuzzy#Buffer()<CR>
 nnoremap <silent> <Leader><C-@> :call scope#fuzzy#File()<CR>
+nnoremap <silent> <LocalLeader><Space> :call scope#fuzzy#LspDocumentSymbol()<CR>
 nnoremap <silent> <LocalLeader><C-@> :call PickLspSymbols()<CR>
 
 "" grepper
@@ -857,7 +872,7 @@ def PickLspSymbols()
 		return resp['result']->map((_, val): dict<any> => {
 			return {
 				name: val['name'],
-				text: val['name'] .. "\t" .. fnamemodify(lsp#util#LspUriToFile(val['location']['uri']), ':.'),
+				text: val['name'] .. "  \t" .. fnamemodify(lsp#util#LspUriToFile(val['location']['uri']), ':.'),
 				location: val['location'] }
 		})
 	enddef
@@ -899,6 +914,6 @@ def PickLspSymbols()
 		(lst: list<dict<any>>, prompt: string): list<any> => {
 			timer_start(1, function(UpdateItems, [menu.prompt]))
 			return [[], [[]]]
-		}, null_function, false)
+		}, null_function, true)
 enddef
 
