@@ -485,6 +485,7 @@ augroup yeggapanLsp
 	autocmd!
 	autocmd User LspSetup call s:SetupLsp()
 	autocmd User LspAttached setlocal tagfunc=lsp#lsp#TagFunc
+	autocmd User LspAttached inoremap <buffer> <silent> ( <C-R>=lexima#expand('(', 'i')<CR><C-R>=g:LspShowSignature()<CR>
 augroup END
 
 
