@@ -60,10 +60,6 @@ Plug 'iCyMind/NeoSolarized'
 Plug 'vim-airline/vim-airline'
 "" color schemes for airline theme
 Plug 'vim-airline/vim-airline-themes'
-"" airline for tmux
-Plug 'edkolev/tmuxline.vim'
-"" airline for shell
-Plug 'edkolev/promptline.vim'
 "" devicons
 Plug 'ryanoasis/vim-devicons'
 "" auto-disable search highlighting
