@@ -155,6 +155,7 @@ function __promptline_ssh_prompt {
 }
 function __promptline {
   local last_exit_code="${PROMPTLINE_LAST_EXIT_CODE:-$?}"
+  __set_windowtitle
 
   local esc=$'[' end_esc=m
   if [[ -n ${ZSH_VERSION-} ]]; then
@@ -199,6 +200,38 @@ function __promptline {
   else
     PS1="$(__promptline_ps1)"
   fi
+}
+
+function __set_windowtitle {
+  local dir_limit="3"
+  local truncation="…"
+  local first_char
+  local part_count=0
+  local formatted_cwd=""
+  local dir_sep="/"
+  local tilde="~"
+
+  local cwd="${PWD/#$HOME/$tilde}"
+
+  # get first char of the path, i.e. tilde or slash
+  [[ -n ${ZSH_VERSION-} ]] && first_char=$cwd[1,1] || first_char=${cwd::1}
+
+  # remove leading tilde
+  cwd="${cwd#\~}"
+
+  while [[ "$cwd" == */* && "$cwd" != "/" ]]; do
+    # pop off last part of cwd
+    local part="${cwd##*/}"
+    cwd="${cwd%/*}"
+
+    formatted_cwd="$dir_sep$part$formatted_cwd"
+    part_count=$((part_count+1))
+
+    [[ $part_count -eq $dir_limit ]] && first_char="$truncation" && break
+  done
+
+  local cwd="$first_char$formatted_cwd"
+  printf '\033]2;%s\033\\' "$USER@$HOST:$cwd"
 }
 
 if [[ -n ${ZSH_VERSION-} ]]; then
