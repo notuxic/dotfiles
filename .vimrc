@@ -399,7 +399,8 @@ function! s:SetupLsp()
 \		'showDiagWithSigns': v:false,
 \		'showDiagWithVirtualText': v:false,
 \		'showInlayHints': v:true,
-\		'filterCompletionDuplicates': v:true
+\		'filterCompletionDuplicates': v:true,
+\		'ignoreCompleteItemsIsIncomplete': ['rust-analyzer']
 \ })
 	call g:LspAddServer([
 \		{
