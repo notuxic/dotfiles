@@ -106,12 +106,12 @@ bspc rule -a "Zathura" state=tiled
 ## setup workspaces
 case "$(uname -n)" in
 	*-vbox )
-		bspc monitor Virtual1 -d home1 media1 dev1 term1 other1
-		$HOME/.config/statusbar/statusbar.pl Virtual1 &
-		if [ $(xrandr | grep -c "Virtual2 connected") -eq 1 ]
+		bspc monitor Virtual-1 -d home1 media1 dev1 term1 other1
+		$HOME/.config/statusbar/statusbar.pl Virtual-1 &
+		if [ $(xrandr | grep -c "Virtual-2 connected") -eq 1 ]
 		then
-			bspc monitor Virtual2 -d home2 media2 dev2 term2 other2
-			$HOME/.config/statusbar/statusbar.pl Virtual2 &
+			bspc monitor Virtual-2 -d home2 media2 dev2 term2 other2
+			$HOME/.config/statusbar/statusbar.pl Virtual-2 &
 		fi
 		;;
 	* )
