@@ -112,8 +112,6 @@ Plug 'cohama/lexima.vim'
 
 "" fuzzy picker
 Plug 'girishji/scope.vim'
-"" fast grepping
-Plug 'mhinz/vim-grepper'
 "" git commands
 Plug 'tpope/vim-fugitive'
 "" shell commands
@@ -287,21 +285,6 @@ call lexima#add_rule({
 \ 'at': '^.*{{\(#\|\^\)\([^}]*\)}}*\%#$',
 \ 'with_submatch': 1
 \ })
-
-
-"" grepper
-runtime plugin/grepper.vim
-let g:grepper.quickfix = 0
-let g:grepper.jump = 0
-let g:grepper.prompt = 1
-let g:grepper.prompt_text = 'grep: '
-let g:grepper.prompt_quote = 1
-let g:grepper.prompt_mapping_tool = '<C-S-T>'
-let g:grepper.prompt_mapping_dir = '<C-S-D>'
-let g:grepper.prompt_mapping_side = '<C-S-S>'
-let g:grepper.dir = 'cwd'
-let g:grepper.side = 0
-let g:grepper.tools = ['rg', 'grep']
 
 
 "" miniSnip
@@ -648,10 +631,7 @@ nnoremap <silent> <Leader><Space> :call scope#fuzzy#Buffer()<CR>
 nnoremap <silent> <Leader><C-@> :call scope#fuzzy#File()<CR>
 nnoremap <silent> <LocalLeader><Space> :call scope#fuzzy#LspDocumentSymbol()<CR>
 nnoremap <silent> <LocalLeader><C-@> :call PickLspSymbols()<CR>
-
-"" grepper
-nnoremap <Leader>g :Grepper<CR>
-nnoremap <Leader>G :Grepper -dir repo<CR>
+nnoremap <silent> <Leader>g :call scope#fuzzy#Grep('rg --hidden --vimgrep --smart-case')<CR>
 
 "" mucomplete
 inoremap <Tab> <Plug>(MUcompleteFwd)
