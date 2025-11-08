@@ -17,7 +17,7 @@ XTerm*boldColors: false
 XTerm*underLine: true
 !XTerm*altSendsEscape: true
 XTerm*metaSendsEscape: true
-!XTerm*modifyOtherKeys:
+XTerm*modifyOtherKeys: 1
 XTerm*fullscreen: 3
 XTerm*pointerFont: xcursor-breeze
 XTerm*pointerShape: left_ptr
@@ -52,7 +52,7 @@ XTerm*color14: rgb:93/a1/a1
 XTerm*color15: rgb:fd/f6/e3
 XTerm*omitTranslation: fullscreen,paging,reset,select,shift-fonts
 XTerm*VT100*translations: #override \n\
-	Meta <Key>): set-vt-font(d)\n\
+	Meta <Key>): set-vt-font(d) \n\
 	Meta <Key>_: smaller-vt-font() \n\
 	Meta <Key>+: larger-vt-font()
 
