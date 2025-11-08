@@ -472,6 +472,7 @@ augroup yeggapanLsp
 	autocmd!
 	autocmd User LspSetup call s:SetupLsp()
 	autocmd User LspAttached setlocal tagfunc=lsp#lsp#TagFunc
+	autocmd User LspAttached setlocal keywordprg=:LspHover
 	autocmd User LspAttached inoremap <buffer> <silent> ( <C-R>=lexima#expand('(', 'i')<CR><C-R>=g:LspShowSignature()<CR>
 augroup END
 
@@ -609,6 +610,7 @@ set lazyredraw
 set showcmd
 set updatetime=100
 set mouse=a
+set ttymouse=sgr
 set number relativenumber
 set showmatch
 set errorbells
