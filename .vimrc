@@ -617,14 +617,14 @@ set completeopt=menuone,noinsert,noselect,popup
 """"""""""""""""""""
 
 "" move
-nmap <C-Up> <Plug>MoveLineUp
-xmap <C-Up> <Plug>MoveBlockUp
-nmap <C-Down> <Plug>MoveLineDown
-xmap <C-Down> <Plug>MoveBlockDown
-nmap <C-Right> <Plug>MoveCharRight
-xmap <C-Right> <Plug>MoveBlockRight
-nmap <C-Left> <Plug>MoveCharLeft
-xmap <C-Left> <Plug>MoveBlockLeft
+nnoremap <C-Up> <Plug>MoveLineUp
+xnoremap <C-Up> <Plug>MoveBlockUp
+nnoremap <C-Down> <Plug>MoveLineDown
+xnoremap <C-Down> <Plug>MoveBlockDown
+nnoremap <C-Right> <Plug>MoveCharRight
+xnoremap <C-Right> <Plug>MoveBlockRight
+nnoremap <C-Left> <Plug>MoveCharLeft
+xnoremap <C-Left> <Plug>MoveBlockLeft
 
 "" scope
 nnoremap <silent> <Leader><Space> :call scope#fuzzy#Buffer()<CR>
@@ -671,24 +671,24 @@ xnoremap <silent> <Leader>' <Cmd>LspSelectionExpand<CR>
 xnoremap <silent> <Leader>; <Cmd>LspSelectionShrink<CR>
 
 "" padline
-imap <LocalLeader>; <Plug>PadLineAbove
-imap <LocalLeader>' <Plug>PadLineBelow
-imap <LocalLeader><CR> <Plug>PadLineAround
-nmap <LocalLeader>; <Plug>PadLineAbove
-nmap <LocalLeader>' <Plug>PadLineBelow
-nmap <LocalLeader><CR> <Plug>PadLineAround
-xmap <LocalLeader>; <Plug>PadBlockAbove
-xmap <LocalLeader>' <Plug>PadBlockBelow
-xmap <LocalLeader><CR> <Plug>PadBlockAround
-imap <LocalLeader>: <Plug>UnpadLineAbove
-imap <LocalLeader>" <Plug>UnpadLineBelow
-imap <LocalLeader><BS> <Plug>UnpadLineAround
-nmap <LocalLeader>: <Plug>UnpadLineAbove
-nmap <LocalLeader>" <Plug>UnpadLineBelow
-nmap <LocalLeader><BS> <Plug>UnpadLineAround
-xmap <LocalLeader>: <Plug>UnpadBlockAbove
-xmap <LocalLeader>" <Plug>UnpadBlockBelow
-xmap <LocalLeader><BS> <Plug>UnpadBlockAround
+inoremap <LocalLeader>; <Plug>PadLineAbove
+inoremap <LocalLeader>' <Plug>PadLineBelow
+inoremap <LocalLeader><CR> <Plug>PadLineAround
+nnoremap <LocalLeader>; <Plug>PadLineAbove
+nnoremap <LocalLeader>' <Plug>PadLineBelow
+nnoremap <LocalLeader><CR> <Plug>PadLineAround
+xnoremap <LocalLeader>; <Plug>PadBlockAbove
+xnoremap <LocalLeader>' <Plug>PadBlockBelow
+xnoremap <LocalLeader><CR> <Plug>PadBlockAround
+inoremap <LocalLeader>: <Plug>UnpadLineAbove
+inoremap <LocalLeader>" <Plug>UnpadLineBelow
+inoremap <LocalLeader><BS> <Plug>UnpadLineAround
+nnoremap <LocalLeader>: <Plug>UnpadLineAbove
+nnoremap <LocalLeader>" <Plug>UnpadLineBelow
+nnoremap <LocalLeader><BS> <Plug>UnpadLineAround
+xnoremap <LocalLeader>: <Plug>UnpadBlockAbove
+xnoremap <LocalLeader>" <Plug>UnpadBlockBelow
+xnoremap <LocalLeader><BS> <Plug>UnpadBlockAround
 
 if has('python3')
 	"" vimspector
