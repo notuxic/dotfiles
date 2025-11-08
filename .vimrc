@@ -107,6 +107,8 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'embear/vim-localvimrc'
 "" auto-close pairs
 Plug 'cohama/lexima.vim'
+"" align operation
+Plug 'junegunn/vim-easy-align'
 
 """" Tools
 
@@ -285,6 +287,11 @@ call lexima#add_rule({
 \ 'at': '^.*{{\(#\|\^\)\([^}]*\)}}*\%#$',
 \ 'with_submatch': 1
 \ })
+
+
+"" easy-align
+xnoremap ga <Plug>(EasyAlign)
+nnoremap ga <Plug>(EasyAlign)
 
 
 "" miniSnip
@@ -894,4 +901,21 @@ def PickLspSymbols()
 			return [[], [[]]]
 		}, null_function, true)
 enddef
+
+
+"" latex tabular
+
+let g:latex_tablemode_envs = ["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"]
+
+function! g:GenerateTexTable(rows, columns, placeholder="x") abort
+	execute "normal! i" . repeat(a:placeholder . " " . repeat("& " . a:placeholder . " ",a:columns-1) . "\\\\\<CR>", a:rows-1) . a:placeholder . " " . repeat("& " . a:placeholder . " ",a:columns-1)
+endfunction
+
+nnoremap <expr> <silent> <Plug>(latex-tablemode-select-cell) (index(g:latex_tablemode_envs, vimtex#env#get_inner()->get('name', '')) >= 0) ? '/&\\|\\\\\\|$<CR>gev?&\\|^<CR>w<C-G>' : '\<Nop>'
+nnoremap <buffer> <C-S> <Plug>(latex-tablemode-select-cell)
+inoremap <buffer> <C-S> <Esc><Plug>(latex-tablemode-select-cell)
+snoremap <buffer> <Down> <Esc>j<Plug>(latex-tablemode-select-cell)
+snoremap <buffer> <Up> <Esc>k<Plug>(latex-tablemode-select-cell)
+snoremap <buffer> <Left> <Esc>:silent! execute "normal F&h\<Plug>(latex-tablemode-select-cell)"<CR>
+snoremap <buffer> <Right> <Esc>:silent! execute "normal f&l\<Plug>(latex-tablemode-select-cell)"<CR>
 
