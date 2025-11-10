@@ -11,7 +11,7 @@ Xft.rgba: rgb
 XTerm*termName: xterm-256color
 XTerm*locale: true
 XTerm*utf8: true
-XTerm*scaleHeight: 1.01
+XTerm*scaleHeight: 1
 XTerm*allowBoldFonts: true
 XTerm*boldColors: false
 XTerm*underLine: true
@@ -62,6 +62,7 @@ Zutty.altScroll: false
 Zutty.autoCopy: false
 Zutty.saveLines: 0
 Zutty.altSendsEscape: true
+Zutty.modifyOtherKeys: 1
 Zutty.boldColors: false
 Zutty.font: Hack Nerd Font Mono
 Zutty.fontsize: 15
