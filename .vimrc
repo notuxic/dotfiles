@@ -18,7 +18,7 @@ endif
 
 "" auto-install plugin-manager and plugins
 if empty(glob(expand('~/.vim/autoload/plug.vim')))
-	:call execute('!curl --create-dirs --silent --show-error --fail --location --output "' . expand('~/.vim/autoload/plug.vim') . '" "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"', 'silent')
+	:call execute('!curl --create-dirs --silent --show-error --fail --location --output "' .. expand('~/.vim/autoload/plug.vim') .. '" "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"', 'silent')
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -324,7 +324,7 @@ augroup vimtexMisc
 augroup END
 augroup vimtexClientServer
 	autocmd!
-	autocmd FileType tex if empty(v:servername) && exists('*remote_startserver') | call remote_startserver('tex:' . lsp#util#FindNearestRootDir(expand('%:p:h'), g:vimtex_root_markers)) | endif
+	autocmd FileType tex if empty(v:servername) && exists('*remote_startserver') | call remote_startserver('tex:' .. lsp#util#FindNearestRootDir(expand('%:p:h'), g:vimtex_root_markers)) | endif
 augroup END
 
 
@@ -559,7 +559,7 @@ let &showbreak = "\uf63d"
 augroup listChars
 	autocmd!
 	autocmd OptionSet shiftwidth setlocal listchars=tab:\\u2506\ ,trail:\\u00b7,extends:\\uf63d,precedes:\\uf63c
-	autocmd OptionSet shiftwidth execute 'setlocal listchars+=leadmultispace:\\u2506' . repeat('\\x20', v:option_new - 1)
+	autocmd OptionSet shiftwidth execute 'setlocal listchars+=leadmultispace:\\u2506' .. repeat('\\x20', v:option_new - 1)
 augroup END
 
 "" set cursor shape based on mode
@@ -777,6 +777,12 @@ inoremap <LocalLeader>~ <C-\><C-O><C-W><C-^>
 "" open a buffer with vertical split
 cnoreabbrev vsb vertical sbuffer
 
+"" go to definition
+nnoremap <silent> <2-LeftMouse> :exe "tag " .. expand("<cword>")<CR>
+"" go back/forward in jump list
+nnoremap <X1Mouse> <C-O>
+nnoremap <X2Mouse> <C-I>
+
 "" save changes of current buffer to disk
 nnoremap <silent> ZX :update<CR>
 "" save all changed buffers to disk
@@ -795,7 +801,7 @@ augroup customThirdPartyVimScript
 
 	"" add current file extension to `gf` file lookup
 	"" (https://stackoverflow.com/questions/33093491/vim-gf-with-file-extension-based-on-current-filetype#comment89565052_33093491)
-	autocmd BufRead * execute 'setlocal suffixesadd+=.' . expand('%:e')
+	autocmd BufRead * execute 'setlocal suffixesadd+=.' .. expand('%:e')
 augroup END
 
 "" enable persistent undo
@@ -910,7 +916,7 @@ enddef
 let g:latex_tablemode_envs = ["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"]
 
 function! g:GenerateTexTable(rows, columns, placeholder="x") abort
-	execute "normal! i" . repeat(a:placeholder . " " . repeat("& " . a:placeholder . " ",a:columns-1) . "\\\\\<CR>", a:rows-1) . a:placeholder . " " . repeat("& " . a:placeholder . " ",a:columns-1)
+	execute "normal! i" .. repeat(a:placeholder .. " " .. repeat("& " .. a:placeholder .. " ",a:columns-1) .. "\\\\\<CR>", a:rows-1) .. a:placeholder .. " " .. repeat("& " .. a:placeholder .. " ",a:columns-1)
 endfunction
 
 nnoremap <expr> <silent> <Plug>(latex-tablemode-select-cell) (index(g:latex_tablemode_envs, vimtex#env#get_inner()->get('name', '')) >= 0) ? '/&\\|\\\\\\|$<CR>gev?&\\|^<CR>w<C-G>' : '\<Nop>'
