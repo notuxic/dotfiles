@@ -678,6 +678,8 @@ nnoremap <silent> <Leader>' :LspSelectionExpand<CR>
 nnoremap <silent> <Leader>; :LspSelectionShrink<CR>
 xnoremap <silent> <Leader>' <Cmd>LspSelectionExpand<CR>
 xnoremap <silent> <Leader>; <Cmd>LspSelectionShrink<CR>
+nnoremap <silent> <Leader>- :call GoToLspReference(v:true)<CR>
+nnoremap <silent> <Leader>= :call GoToLspReference(v:false)<CR>
 
 "" padline
 inoremap <LocalLeader>; <Plug>PadLineAbove
@@ -840,6 +842,66 @@ augroup END
 
 """" 1st Party
 
+"" go to next/prev reference
+def GoToLspReference(direction_back: bool)
+	var lspserver = lsp#buffer#CurbufGetServerChecked('workspaceSymbol')
+	if lspserver->empty()
+		echohl WarningMsg | redraw | echomsg 'error: no language-server available!' | echohl None
+		return
+	endif
+
+	if !lspserver.isReferencesProvider
+		echohl WarningMsg | redraw | echomsg 'error: language-server does not support document highlight!' | echohl None
+		return
+	endif
+
+	var param: dict<any>
+	param = lspserver.getTextDocPosition(true)
+	var reply = lspserver.rpc('textDocument/documentHighlight', param)
+
+	if reply->empty() || !reply->has_key('result')
+		echohl WarningMsg | redraw | echomsg 'error: language-server not ready yet!' | echohl None
+		return
+	endif
+	if reply.result->empty()
+		echohl WarningMsg | redraw | echomsg 'No references found' | echohl None
+		return
+	endif
+
+	sort(reply.result, (e1, e2) => {
+		if e1.range.start.line == e2.range.start.line
+			return e1.range.start.character - e2.range.start.character
+		else
+			return e1.range.start.line - e2.range.start.line
+		endif
+	})
+	if direction_back
+		reverse(reply.result)
+	endif
+
+	var target_location: dict<any>
+	target_location.uri = param.textDocument.uri
+	for item in reply.result
+		if direction_back && ((item.range.end.line == param.position.line && item.range.end.character < param.position.character) || item.range.end.line < param.position.line)
+			target_location.range = item.range
+			break
+		endif
+		if !direction_back && ((item.range.start.line == param.position.line && item.range.start.character > param.position.character) || item.range.start.line > param.position.line)
+			target_location.range = item.range
+			break
+		endif
+	endfor
+
+	if !target_location->has_key('range')
+		target_location.range = reply.result[0].range
+	endif
+	if lspserver.needOffsetEncoding
+		lspserver.decodeLocation(target_location)
+	endif
+	lsp#util#JumpToLspLocation(target_location, '')
+enddef
+
+
 "" pick lsp workspace symbols
 import autoload 'scope/popup.vim'
 def PickLspSymbols()
@@ -859,7 +921,7 @@ def PickLspSymbols()
 		endtry
 		if !resp->has_key('result')
 			echohl WarningMsg | redraw | echomsg 'error: language-server not ready yet!' | echohl None
-		return []
+			return []
 		endif
 
 		return resp['result']->map((_, val): dict<any> => {
