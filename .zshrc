@@ -120,6 +120,7 @@ tmux-ssh-status() {
 }
 tmux-ssh-status
 
+
 ## Ctrl-z toggles the latest foreground job, preserving zsh input buffer
 ## based on: https://stackoverflow.com/q/30662735
 toggle-ctrl-z () {
