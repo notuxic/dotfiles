@@ -131,6 +131,57 @@ toggle-ctrl-z () {
 zle -N toggle-ctrl-z
 
 
+## urlencode string for OSC 7
+## based on: https://unix.stackexchange.com/a/60698
+## used by: __vte_osc7
+__urlencode_osc7 () {
+  string=$1; format=; set --
+  while
+	literal=${string%%[!-._~0-9A-Za-z/]*}
+	if [ -n "$literal" ]; then
+	  format=$format%s
+	  set -- "$@" "$literal"
+	  string=${string#$literal}
+	fi
+	[ -n "$string" ]
+  do
+	tail=${string#?}
+	head=${string%$tail}
+	format=$format%%%02x
+	set -- "$@" "'$head"
+	string=$tail
+  done
+  printf "$format" "$@"
+}
+
+
+## support OSC 7 (advertize cwd)
+## support OSC 133 (semantic prompts)
+## based on: `vte.sh`
+__vte_osc7 () {
+	local errsv="$?"
+	printf "\033]7;file://%s%s\033\\" "${HOST}" "$(__urlencode_osc7 "$PWD")"
+	return $errsv
+}
+chpwd_functions+=(__vte_osc7)
+__vte_osc7
+
+__vte_osc133 () {
+	if [[ "$PS1" != *\]133\;* ]] && [[ $- == *i* ]]; then
+		PS1=$'%{\e]133;D;%?;aid=zsh\e\\\e]133;A;aid=zsh\e\\%}'"$PS1"$'%{\e]133;B\e\\%}'
+		#PS2=$'%{\e]133;A;aid=zsh\e\\%}'"$PS2"$'%{\e]133;B\e\\%}'
+		__vte_osc133_preexec() {
+			local errsv="$?"
+			printf '\e]133;C\e\\\r'
+			return $errsv
+		}
+		preexec_functions=(__vte_osc133_preexec $preexec $preexec_functions)
+		unset preexec
+	fi
+}
+precmd_functions+=(__vte_osc133)
+
+
 #  Keybinds
 #############
 
