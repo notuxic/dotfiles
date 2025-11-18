@@ -6,8 +6,7 @@ source ~/.zsh/promptline.sh
 ############
 
 ## auto-install plugin-manager
-if [ ! -e ~/.zsh/antigen ]
-then
+if [ ! -e ~/.zsh/antigen ]; then
   mkdir -p ~/.zsh
   git clone https://github.com/zsh-users/antigen.git ~/.zsh/antigen
 fi
@@ -127,7 +126,7 @@ __zshrc_toggle_ctrl_z() {
 zle -N __zshrc_toggle_ctrl_z
 
 
-## set window title
+## support OSC 2 (set window title)
 __zshrc_set_windowtitle_precmd() {
 	local cwd="${PWD/#$HOME/~}"
 	printf '\033]2;%s\033\\' "$USER@$HOST:$cwd"
@@ -145,7 +144,7 @@ preexec_functions+=(__zshrc_set_windowtitle_preexec)
 
 ## urlencode string for OSC 7
 ## based on: https://unix.stackexchange.com/a/60698
-## used by: __vte_osc7
+## used by: __zshrc_vte_osc7
 __zshrc_urlencode_osc7() {
   local string="$1"; local format=""; set --
   while
@@ -177,7 +176,6 @@ __zshrc_vte_osc7() {
 }
 chpwd_functions+=(__zshrc_vte_osc7)
 __zshrc_vte_osc7
-
 __zshrc_vte_osc133() {
 	if [[ "$PS1" != *\]133\;* ]] && [[ $- == *i* ]]; then
 		PS1=$'%{\e]133;D;%?;aid=zsh\e\\\e]133;A;aid=zsh\e\\%}'"$PS1"$'%{\e]133;B\e\\%}'
