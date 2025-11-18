@@ -1,3 +1,7 @@
+## early config
+setopt EMACS
+
+
 ## load prompt theme, generated with airline's promptline
 source ~/.zsh/promptline.sh
 
@@ -62,7 +66,6 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 #  Config
 ###########
 
-setopt EMACS
 setopt INTERACTIVE_COMMENTS
 #setopt PATH_DIRS
 setopt RM_STAR_SILENT
@@ -199,12 +202,10 @@ fi
 #  Keybinds
 #############
 
-autopair-init
-
-bindkey 'OA' history-substring-search-up
-bindkey 'OB' history-substring-search-down
-bindkey '[A' history-substring-search-up
-bindkey '[B' history-substring-search-down
+bindkey '\eOA' history-substring-search-up
+bindkey '\eOB' history-substring-search-down
+bindkey '\e[A' history-substring-search-up
+bindkey '\e[B' history-substring-search-down
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
