@@ -147,21 +147,21 @@ preexec_functions+=(__zshrc_set_windowtitle_preexec)
 ## based on: https://unix.stackexchange.com/a/60698
 ## used by: __vte_osc7
 __zshrc_urlencode_osc7() {
-  string=$1; format=; set --
+  local string="$1"; local format=""; set --
   while
-	literal=${string%%[!-._~0-9A-Za-z/]*}
+	local literal="${string%%[!-._~0-9A-Za-z/]*}"
 	if [ -n "$literal" ]; then
-	  format=$format%s
+	  format="$format%s"
 	  set -- "$@" "$literal"
-	  string=${string#$literal}
+	  string="${string#$literal}"
 	fi
 	[ -n "$string" ]
   do
-	tail=${string#?}
-	head=${string%$tail}
-	format=$format%%%02x
+	local tail="${string#?}"
+	local head="${string%$tail}"
+	format="$format%%%02x"
 	set -- "$@" "'$head"
-	string=$tail
+	string="$tail"
   done
   printf "$format" "$@"
 }
