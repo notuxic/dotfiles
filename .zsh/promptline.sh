@@ -95,10 +95,8 @@ function __promptline_cwd {
 
     if [[ $part_count -eq $dir_limit ]]; then
       part="${cwd##*/}"
-      if [[ -z $part ]]; then
-        first_char="/"
-      else
-        first_char="$truncation"
+      if [[ -n $part ]]; then
+		first_char="$truncation"
       fi
       break
     fi
