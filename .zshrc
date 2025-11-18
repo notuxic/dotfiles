@@ -131,7 +131,6 @@ __zshrc_set_windowtitle_precmd() {
 	local cwd="${PWD/#$HOME/~}"
 	printf '\033]2;%s\033\\' "$USER@$HOST:$cwd"
 }
-precmd_functions+=(__zshrc_set_windowtitle_precmd)
 __zshrc_set_windowtitle_preexec() {
 	if [[ -n "$1" ]]; then
 		printf '\033]2;%s\033\\' "$1"
@@ -139,7 +138,10 @@ __zshrc_set_windowtitle_preexec() {
 		printf '\033]2;%s\033\\' "$2"
 	fi
 }
-preexec_functions+=(__zshrc_set_windowtitle_preexec)
+if [[ $- == *i* ]]; then
+	precmd_functions+=(__zshrc_set_windowtitle_precmd)
+	preexec_functions+=(__zshrc_set_windowtitle_preexec)
+fi
 
 
 ## urlencode string for OSC 7
@@ -174,8 +176,6 @@ __zshrc_vte_osc7() {
 	printf "\033]7;file://%s%s\033\\" "$HOST" "$(__zshrc_urlencode_osc7 "$PWD")"
 	return $errsv
 }
-chpwd_functions+=(__zshrc_vte_osc7)
-__zshrc_vte_osc7
 __zshrc_vte_osc133() {
 	if [[ "$PS1" != *\]133\;* ]] && [[ $- == *i* ]]; then
 		PS1=$'%{\e]133;D;%?;aid=zsh\e\\\e]133;A;aid=zsh\e\\%}'"$PS1"$'%{\e]133;B\e\\%}'
@@ -189,7 +189,11 @@ __zshrc_vte_osc133() {
 		unset preexec
 	fi
 }
-precmd_functions+=(__zshrc_vte_osc133)
+if [[ $- == *i* ]]; then
+	__zshrc_vte_osc7
+	chpwd_functions+=(__zshrc_vte_osc7)
+	precmd_functions+=(__zshrc_vte_osc133)
+fi
 
 
 #  Keybinds
