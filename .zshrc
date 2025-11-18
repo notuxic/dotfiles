@@ -33,7 +33,7 @@ antigen apply
 # zsh-uers/zsh-autosuggestions
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=11"
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_IGNORE_WIDGETS+="toggle-ctrl-z"
+ZSH_AUTOSUGGEST_IGNORE_WIDGETS+="__zshrc_toggle_ctrl_z"
 
 # zsh-users/zsh-syntax-highlighting
 typeset -A ZSH_HIGHLIGHT_STYLES
@@ -87,13 +87,11 @@ zle -N edit-command-line
 #############
 
 ## load ssh-agent
-load-ssh-agent() {
+__zshrc_load_ssh_agent() {
   type ssh-agent >/dev/null 2>/dev/null
-  if [ $? -eq 0 ] && [[ ! -n ${SSH_AUTH_SOCK} ]]
-  then
+  if [ $? -eq 0 ] && [[ -z "$SSH_AUTH_SOCK" ]]; then
     local ssh_env_path="/tmp/ssh-agent-$(id -u).env"
-    if [[ -n $(ps -o comm -u $(id -u) | grep ssh-agent) ]] && [[ -e ${ssh_env_path} ]]
-    then
+    if [[ -n "$(ps -o comm -u $(id -u) | grep ssh-agent)" ]] && [[ -e "${ssh_env_path}" ]]; then
       source "$ssh_env_path" >/dev/null
     else
       echo "" > "$ssh_env_path"
@@ -102,33 +100,31 @@ load-ssh-agent() {
     fi
   fi
 }
-load-ssh-agent
+__zshrc_load_ssh_agent
 
 
 ## show SSH status in tmux statusline
-tmux-ssh-status() {
-  if [[ -n ${TMUX} ]]
-  then
+__zshrc_tmux_ssh_status() {
+  if [[ -n "$TMUX" ]]; then
     local _tmux_status_right="$(tmux show-options -gv status-right)"
-    if [[ -n ${SSH_CONNECTION} ]]
-    then
+    if [[ -n "$SSH_CONNECTION" ]]; then
       tmux set-option -s status-right "${_tmux_status_right}#[fg=color3]#[fg=color15,bg=color3] SSH "
     else
       tmux set-option -s status-right "${_tmux_status_right}"
     fi
   fi
 }
-tmux-ssh-status
+__zshrc_tmux_ssh_status
 
 
 ## Ctrl-z toggles the latest foreground job, preserving zsh input buffer
 ## based on: https://stackoverflow.com/q/30662735
-toggle-ctrl-z () {
+__zshrc_toggle_ctrl_z() {
   zle push-input
   BUFFER=" fg"
   zle accept-line
 }
-zle -N toggle-ctrl-z
+zle -N __zshrc_toggle_ctrl_z
 
 
 ## set window title
@@ -150,7 +146,7 @@ preexec_functions+=(__zshrc_set_windowtitle_preexec)
 ## urlencode string for OSC 7
 ## based on: https://unix.stackexchange.com/a/60698
 ## used by: __vte_osc7
-__urlencode_osc7 () {
+__zshrc_urlencode_osc7() {
   string=$1; format=; set --
   while
 	literal=${string%%[!-._~0-9A-Za-z/]*}
@@ -174,28 +170,28 @@ __urlencode_osc7 () {
 ## support OSC 7 (advertize cwd)
 ## support OSC 133 (semantic prompts)
 ## based on: `vte.sh`
-__vte_osc7 () {
+__zshrc_vte_osc7() {
 	local errsv="$?"
-	printf "\033]7;file://%s%s\033\\" "${HOST}" "$(__urlencode_osc7 "$PWD")"
+	printf "\033]7;file://%s%s\033\\" "$HOST" "$(__zshrc_urlencode_osc7 "$PWD")"
 	return $errsv
 }
-chpwd_functions+=(__vte_osc7)
-__vte_osc7
+chpwd_functions+=(__zshrc_vte_osc7)
+__zshrc_vte_osc7
 
-__vte_osc133 () {
+__zshrc_vte_osc133() {
 	if [[ "$PS1" != *\]133\;* ]] && [[ $- == *i* ]]; then
 		PS1=$'%{\e]133;D;%?;aid=zsh\e\\\e]133;A;aid=zsh\e\\%}'"$PS1"$'%{\e]133;B\e\\%}'
 		#PS2=$'%{\e]133;A;aid=zsh\e\\%}'"$PS2"$'%{\e]133;B\e\\%}'
-		__vte_osc133_preexec() {
+		__zshrc_vte_osc133_preexec() {
 			local errsv="$?"
 			printf '\e]133;C\e\\\r'
 			return $errsv
 		}
-		preexec_functions=(__vte_osc133_preexec $preexec $preexec_functions)
+		preexec_functions=(__zshrc_vte_osc133_preexec $preexec $preexec_functions)
 		unset preexec
 	fi
 }
-precmd_functions+=(__vte_osc133)
+precmd_functions+=(__zshrc_vte_osc133)
 
 
 #  Keybinds
@@ -210,6 +206,6 @@ bindkey '[B' history-substring-search-down
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
-bindkey '\C-z' toggle-ctrl-z
+bindkey '\C-z' __zshrc_toggle_ctrl_z
 bindkey '\C-x\C-e' edit-command-line
 
