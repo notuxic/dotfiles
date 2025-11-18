@@ -131,15 +131,19 @@ zle -N __zshrc_toggle_ctrl_z
 
 ## support OSC 2 (set window title)
 __zshrc_set_windowtitle_precmd() {
+	local errsv="$?"
 	local cwd="${PWD/#$HOME/~}"
 	printf '\033]2;%s\033\\' "$USER@$HOST:$cwd"
+	return $errsv
 }
 __zshrc_set_windowtitle_preexec() {
+	local errsv="$?"
 	if [[ -n "$1" ]]; then
 		printf '\033]2;%s\033\\' "$1"
 	else
 		printf '\033]2;%s\033\\' "$2"
 	fi
+	return $errsv
 }
 if [[ $- == *i* ]]; then
 	precmd_functions+=(__zshrc_set_windowtitle_precmd)
