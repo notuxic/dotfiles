@@ -131,6 +131,22 @@ toggle-ctrl-z () {
 zle -N toggle-ctrl-z
 
 
+## set window title
+__zshrc_set_windowtitle_precmd() {
+	local cwd="${PWD/#$HOME/~}"
+	printf '\033]2;%s\033\\' "$USER@$HOST:$cwd"
+}
+precmd_functions+=(__zshrc_set_windowtitle_precmd)
+__zshrc_set_windowtitle_preexec() {
+	if [[ -n "$1" ]]; then
+		printf '\033]2;%s\033\\' "$1"
+	else
+		printf '\033]2;%s\033\\' "$2"
+	fi
+}
+preexec_functions+=(__zshrc_set_windowtitle_preexec)
+
+
 ## urlencode string for OSC 7
 ## based on: https://unix.stackexchange.com/a/60698
 ## used by: __vte_osc7
