@@ -13,6 +13,7 @@ Applications
  - **editor** vim
  - **pdf viewer** zathura
  - **image viewer** sxiv
+ - **video player** mpv
 
 
 ### Themes
