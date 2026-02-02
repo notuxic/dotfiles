@@ -67,7 +67,7 @@ function find_files(path, file)
 		media_type = "audio"
 	end
 	if media_type == nil then
-		mp.msg.debug("aborting, unsuitable file extension: ." .. file_ext)
+		mp.msg.debug("aborting, unsuitable file extension: ." .. (file_ext or ""))
 		return {}
 	end
 	mp.msg.trace("media type of current file: " .. media_type)
