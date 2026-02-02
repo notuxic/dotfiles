@@ -78,7 +78,7 @@ function find_files(path, file)
 	for _, pattern in ipairs(pattern_ignore) do
 		success, file_cleaned = pcall(string.gsub, file_cleaned, pattern, "")
 		if not success then
-			mp.msg.error("error: option pattern_ignore: " .. prefix .. ": " .. pattern)
+			mp.msg.error("error: option pattern_ignore: " .. file_cleaned .. ": " .. pattern)
 		end
 	end
 
