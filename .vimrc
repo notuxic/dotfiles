@@ -380,7 +380,7 @@ function! s:SetupLsp()
 	call g:LspOptionsSet({
 \		'aleSupport': v:true,
 \		'autoComplete': v:false,
-\		'autoHighlight': v:false,
+\		'autoHighlight': v:true,
 \		'autoHighlightDiags': v:false,
 \		'highlightDiagInline': v:false,
 \		'omniComplete': v:true,
@@ -551,6 +551,12 @@ augroup colorNeoSolarized
 	autocmd ColorScheme NeoSolarized highlight link LspInlayHintsParameter Comment
 	autocmd ColorScheme NeoSolarized highlight clear LspInlayHintsType
 	autocmd ColorScheme NeoSolarized highlight link LspInlayHintsType Comment
+	autocmd ColorScheme NeoSolarized highlight clear LspTextRef
+	autocmd ColorScheme NeoSolarized highlight LspTextRef ctermbg=0 guibg=#073642
+	autocmd ColorScheme NeoSolarized highlight clear LspReadRef
+	autocmd ColorScheme NeoSolarized highlight LspReadRef ctermbg=0 guibg=#073642
+	autocmd ColorScheme NeoSolarized highlight clear LspWriteRef
+	autocmd ColorScheme NeoSolarized highlight LspWriteRef ctermbg=0 guibg=#073642
 augroup END
 colorscheme NeoSolarized
 
