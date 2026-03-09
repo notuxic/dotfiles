@@ -2,7 +2,7 @@
 
 
 ## start sxhkd
-if [ $(ps -A -o cmd | grep -c '^sxhkd') -eq 0 ]
+if [ $(ps -A -o args | grep -c '^sxhkd') -eq 0 ]
 then
 	sxhkd &
 fi
@@ -17,22 +17,22 @@ xsetroot -cursor_name left_ptr
 
 
 ## stop all statusbars
-for pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ perl .*statusbar.pl/ { print $1 }')
+for pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ perl .*statusbar.pl/ { print $1 }')
 do
 	kill -s KILL $pid
 done
 
 
 ## (re)start unclutter
-for pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ unclutter/ { print $1 }')
+for pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ unclutter/ { print $1 }')
 do
 	kill -s KILL $pid
 done
-unclutter --idle 5 --root &
+unclutter -idle 5 -root &
 
 
 ## (re)start picom
-for pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ picom/ { print $1 }')
+for pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ picom/ { print $1 }')
 do
 	kill -s KILL $pid
 done
@@ -40,7 +40,7 @@ picom --daemon
 
 
 ## stop all subscriptions
-for pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ bspc subscribe/ { print $1 }')
+for pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ bspc subscribe/ { print $1 }')
 do
 	kill -s KILL $pid
 done
@@ -114,6 +114,12 @@ case "$(uname -n)" in
 			$HOME/.config/statusbar/statusbar.pl Virtual-2 &
 		fi
 		;;
+	izaya-fbsd )
+		bspc monitor DP-4 -d home1 media1 dev1 term1 other1
+		bspc monitor DP-2 -d home2 media2 dev2 term2 other2
+		$HOME/.config/statusbar/statusbar.pl DP-4 &
+		$HOME/.config/statusbar/statusbar.pl DP-2 &
+		;;
 	* )
 		# find first active monitor, use as fallback
 		_monitor=$(xrandr --listactivemonitors | awk '/^[[:space:]]* 0:/ { print $(NF) }')
@@ -126,7 +132,7 @@ esac
 ## update statusbars on workspace switching
 : $(sleep 1 ; bspc subscribe desktop | while read -r event
 	do
-		for _pid in $(ps -A -o pid,cmd | awk '/[[:digit:]] perl .*statusbar.pl/ { print $1 }')
+		for _pid in $(ps -A -o pid,args | awk '/[[:digit:]] perl .*statusbar.pl/ { print $1 }')
 		do
 			kill -s HUP $_pid
 		done

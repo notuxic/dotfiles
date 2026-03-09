@@ -12,6 +12,9 @@ _sbc_audio_toggle() {
 	if [ "$_uname" = "Linux" ]
 	then
 		amixer set Master toggle
+	elif [ "$_uname" = "FreeBSD" ]
+	then
+		mixer vol.mute=toggle
 	fi
 }
 
@@ -20,6 +23,9 @@ _sbc_audio_mute() {
 	if [ "$_uname" = "Linux" ]
 	then
 		amixer set Master mute
+	elif [ "$_uname" = "FreeBSD" ]
+	then
+		mixer vol.mute=on
 	fi
 }
 
@@ -28,6 +34,9 @@ _sbc_audio_unmute() {
 	if [ "$_uname" = "Linux" ]
 	then
 		amixer set Master unmute
+	elif [ "$_uname" = "FreeBSD" ]
+	then
+		mixer vol.mute=off
 	fi
 }
 
@@ -36,6 +45,9 @@ _sbc_audio_volume_decrease() {
 	if [ "$_uname" = "Linux" ]
 	then
 		amixer set Master 5%-
+	elif [ "$_uname" = "FreeBSD" ]
+	then
+		mixer vol=-5%
 	fi
 }
 
@@ -44,6 +56,9 @@ _sbc_audio_volume_increase() {
 	if [ "$_uname" = "Linux" ]
 	then
 		amixer set Master 5%+
+	elif [ "$_uname" = "FreeBSD" ]
+	then
+		mixer vol=+5%
 	fi
 }
 

@@ -17,7 +17,8 @@ fi
 source ~/.zsh/antigen/antigen.zsh
 
 # adds support for more special keys
-antigen bundle https://github.com/belak/zsh-utils editor
+antigen use belak/zsh-utils --branch=main
+antigen bundle editor@main
 # autopair
 antigen bundle hlissner/zsh-autopair
 # fish-style completion suggestions
