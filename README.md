@@ -8,6 +8,8 @@ Applications
  - **window manager** bspwm + sxhkd
  - **compositor** picom
  - **statusbar** dzen2 + i3status + perl script
+ - **launcher** rofi
+ - **lockscreen** i3lock-color
  - **terminal** xterm + tmux
  - **shell** zsh
  - **editor** vim
