@@ -30,7 +30,7 @@ check_redshift() {
 }
 
 update_i3status() {
-	for _pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ i3status/ { print $1 }')
+	for _pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ i3status/ { print $1 }')
 	do
 		kill -s USR1 "$_pid"
 	done
