@@ -3,6 +3,14 @@
 _uname="$(uname -s)"
 
 
+_sbc_update_i3status() {
+	for _pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ i3status/ { print $1 }')
+	do
+		kill -s USR1 "$_pid"
+	done
+}
+
+
 
 # Audio
 ########
@@ -16,6 +24,7 @@ _sbc_audio_toggle() {
 	then
 		mixer vol.mute=toggle
 	fi
+	_sbc_update_i3status
 }
 
 
@@ -27,6 +36,7 @@ _sbc_audio_mute() {
 	then
 		mixer vol.mute=on
 	fi
+	_sbc_update_i3status
 }
 
 
@@ -38,6 +48,7 @@ _sbc_audio_unmute() {
 	then
 		mixer vol.mute=off
 	fi
+	_sbc_update_i3status
 }
 
 
@@ -49,6 +60,7 @@ _sbc_audio_volume_decrease() {
 	then
 		mixer vol=-5%
 	fi
+	_sbc_update_i3status
 }
 
 
@@ -60,6 +72,29 @@ _sbc_audio_volume_increase() {
 	then
 		mixer vol=+5%
 	fi
+	_sbc_update_i3status
+}
+
+
+_sbc_brightness_increase() {
+	if [ "$_uname" = "Linux" ]
+	then
+	elif [ "$_uname" = "FreeBSD" ]
+	then
+		backlight + 5
+	fi
+	_sbc_update_i3status
+}
+
+
+_sbc_brightness_decrease() {
+	if [ "$_uname" = "Linux" ]
+	then
+	elif [ "$_uname" = "FreeBSD" ]
+	then
+		backlight - 5
+	fi
+	_sbc_update_i3status
 }
 
 
@@ -104,8 +139,33 @@ _sbc_cli_audio() {
 }
 
 
+_sbc_cli_brightness_help() {
+	echo "Usage: ./compat.sh brightness up      increase brightness"
+	echo "       ./compat.sh brightness down    decrease brightness"
+}
+
+
+_sbc_cli_brightness() {
+	case "$2" in
+		"help" )
+			_sbc_cli_brightness_help
+			;;
+		"up" )
+			_sbc_brightness_increase
+			;;
+		"down" )
+			_sbc_brightness_decrease
+			;;
+		* )
+			_sbc_cli_brightness_help
+			exit 1
+	esac
+}
+
+
 _sbc_cli_help() {
-	echo "Usage: ./compat audio <SUBCOMMAND>    audio control"
+	echo "Usage: ./compat audio <SUBCOMMAND>        audio control"
+	echo "       ./compat brightness <SUBCOMMAND>    brightness control"
 }
 
 
@@ -116,6 +176,9 @@ _sbc_cli_main() {
 			;;
 		"audio" )
 			_sbc_cli_audio "$@"
+			;;
+		"brightness" )
+			_sbc_cli_brightness "$@"
 			;;
 		* )
 			_sbc_cli_help

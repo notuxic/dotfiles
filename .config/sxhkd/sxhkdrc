@@ -144,3 +144,22 @@ super + alt + {h,j,k,l}
 super + alt + shift + {h,j,k,l}
 	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
+#
+# media keys
+#
+
+# XF86MonBrightnessUp; @XF86MonBrightnessUp
+XF86MonBrightnessUp; @XF86MonBrightnessUp
+	$HOME/.config/statusbar/compat.sh brightness up
+
+XF86MonBrightnessDown; @XF86MonBrightnessDown
+	$HOME/.config/statusbar/compat.sh brightness down
+
+XF86AudioRaiseVolume; @XF86AudioRaiseVolume
+	$HOME/.config/statusbar/compat.sh audio up
+
+XF86AudioLowerVolume; @XF86AudioLowerVolume
+	$HOME/.config/statusbar/compat.sh audio down
+
+XF86AudioMute; @XF86AudioMute
+	$HOME/.config/statusbar/compat.sh audio toggle
