@@ -120,6 +120,10 @@ case "$(uname -n)" in
 		$HOME/.config/statusbar/statusbar.pl DP-4 &
 		$HOME/.config/statusbar/statusbar.pl DP-2 &
 		;;
+	teijin-fbsd )
+		bspc monitor eDP-1 -d home1 media1 dev1 term1 other1
+		$HOME/.config/statusbar/statusbar.pl eDP-1 &
+		;;
 	* )
 		# find first active monitor, use as fallback
 		_monitor=$(xrandr --listactivemonitors | awk '/^[[:space:]]* 0:/ { print $(NF) }')
