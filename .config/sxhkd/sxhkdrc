@@ -13,6 +13,10 @@ super + Return
 super + @space
 	rofi -show drun
 
+# lockscreen
+super + BackSpace
+	$HOME/.config/screenlock.sh
+
 # make sxhkd reload its configuration files:
 super + alt + shift + r
 	pkill -USR1 -x sxhkd
