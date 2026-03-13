@@ -4,7 +4,7 @@
 ## start sxhkd
 if [ $(ps -A -o args | grep -c '^sxhkd') -eq 0 ]
 then
-	sxhkd &
+	sxhkd -m 1 &
 fi
 
 
