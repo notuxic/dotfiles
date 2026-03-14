@@ -21,6 +21,9 @@ function __promptline_ps1 {
   # ssh header
   __promptline_ssh_prompt
 
+  # jail header
+  __promptline_jail_prompt
+
   # section "a" header
   slice_prefix="${a_bg}${sep}${a_fg}${a_bg}${space}" slice_suffix="$space${a_sep_fg}" slice_joiner="${a_fg}${a_bg}${alt_sep}${space}" slice_empty_prefix="${a_fg}${a_bg}${space}"
   [ $is_prompt_empty -eq 1 ] && slice_prefix="$slice_empty_prefix"
@@ -159,6 +162,14 @@ function __promptline_ssh_prompt {
     printf "%s" "${ssh_fg}${ssh_bg} SSH${ssh_sep_fg}${a_bg}${sep}"
   fi
 }
+function __promptline_jail_prompt {
+  local jail_fg="${a_fg}"
+  local jail_bg="${wrap}48;5;136${end_wrap}"
+  local jail_sep_fg="${wrap}38;5;136${end_wrap}"}
+  if [[ $(uname -s) == "FreeBSD" && $(sysctl -n security.jail.jailed) != "0" ]]; then
+    printf "%s" "${jail_fg}${jail_bg} JAIL${jail_sep_fg}${a_bg}${sep}"
+  fi
+}
 function __promptline {
   local last_exit_code="${PROMPTLINE_LAST_EXIT_CODE:-$?}"
 
@@ -194,11 +205,11 @@ function __promptline {
   local y_bg="${wrap}48;5;11${end_wrap}"
   local y_sep_fg="${wrap}38;5;11${end_wrap}"
   if [[ -n ${ZSH_VERSION-} ]]; then
-    PROMPT="$(__promptline_ssh_prompt)$(__promptline_left_prompt)"
+    PROMPT="$(__promptline_ssh_prompt)$(__promptline_jail_prompt)$(__promptline_left_prompt)"
     RPROMPT="$(__promptline_right_prompt)"
   elif [[ -n ${FISH_VERSION-} ]]; then
     if [[ -n "$1" ]]; then
-      [[ "$1" = "left" ]] && { __promptline_ssh_prompt && __promptline_left_prompt ;} || __promptline_right_prompt
+      [[ "$1" = "left" ]] && { __promptline_ssh_prompt && __promptline_jail_prompt && __promptline_left_prompt ;} || __promptline_right_prompt
     else
       __promptline_ps1
     fi
