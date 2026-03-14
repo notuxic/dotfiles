@@ -112,8 +112,6 @@ __zshrc_tmux_ssh_status() {
     local _tmux_status_right="$(tmux show-options -gv status-right)"
     if [[ -n "$SSH_CONNECTION" ]]; then
       tmux set-option -s status-right "${_tmux_status_right}#[fg=color3]#[fg=color15,bg=color3] SSH "
-    else
-      tmux set-option -s status-right "${_tmux_status_right}"
     fi
   fi
 }
@@ -126,8 +124,6 @@ __zshrc_tmux_jail_status() {
     local _tmux_status_right="$(tmux show-options -gv status-right)"
     if [[ $(uname -s) == "FreeBSD" && $(sysctl -n security.jail.jailed) != "0" ]]; then
       tmux set-option -s status-right "${_tmux_status_right}#[fg=color3]#[fg=color15,bg=color3] JAIL "
-    else
-      tmux set-option -s status-right "${_tmux_status_right}"
     fi
   fi
 }
