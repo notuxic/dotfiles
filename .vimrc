@@ -982,7 +982,7 @@ enddef
 
 "" latex tabular
 
-let g:latex_tablemode_envs = ["matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"]
+let g:latex_tablemode_envs = ["tabular", "matrix", "pmatrix", "bmatrix", "vmatrix", "Vmatrix"]
 
 function! g:GenerateTexTable(rows, columns, placeholder="x") abort
 	execute "normal! i" .. repeat(a:placeholder .. " " .. repeat("& " .. a:placeholder .. " ",a:columns-1) .. "\\\\\<CR>", a:rows-1) .. a:placeholder .. " " .. repeat("& " .. a:placeholder .. " ",a:columns-1)
