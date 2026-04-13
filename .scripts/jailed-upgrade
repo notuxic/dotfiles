@@ -1,0 +1,66 @@
+#!/bin/sh
+
+if [ "x$(uname -s)" != "xFreeBSD" ]
+then
+	echo "[ERROR] Not a FreeBSD system!"
+	exit 1
+fi
+
+bectl check
+if [ "$?" -ne 0 ]
+then
+	echo "[ERROR] System does not support boot environments!"
+fi
+
+if [ "x$(whoami)" != "xroot" ]
+then
+	echo "[ERROR] Not running as root!"
+	exit 1
+fi
+
+BE_NAME="FreeBSD_$(uname -r)_$(date "+%Y-%m-%d_%H-%M")"
+JAIL_NAME="jailed-upgrade-$(date "+%Y-%m-%d_%H-%M")"
+
+STATIC_DATASETS=$(zfs list -H -o name,mountpoint | grep -v ROOT | cut -w -f2 | grep -v none)
+
+
+## System update
+
+echo "[INFO] Creating boot environment ..."
+bectl create -r "$BE_NAME"
+
+echo "[INFO] Creating jail ..."
+bectl jail -b -o "name=$JAIL_NAME" -o ip4=inherit -o ip6=inherit -o allow.raw_sockets=true "$BE_NAME"
+JAIL_MOUNTPOINT=$(bectl list -H | grep "$BE_NAME" | cut -w -f3)
+for mountpoint in $STATIC_DATASETS
+do
+	mount_nullfs "$mountpoint" "$JAIL_MOUNTPOINT/$mountpoint"
+done
+
+echo "[INFO] Upgrading packages ..."
+jexec "$JAIL_NAME" pkg update -f
+jexec "$JAIL_NAME" pkg upgrade -y
+
+echo "[INFO] Destroying jail ..."
+for mountpoint in $STATIC_DATASETS
+do
+	umount "$JAIL_MOUNTPOINT/$mountpoint"
+done
+bectl ujail "$BE_NAME"
+
+echo "[INFO] Activating new boot environment once ..."
+bectl activate -t "$BE_NAME"
+
+
+
+## Plugin update
+
+echo "[INFO] Updating vim plugins ..."
+sudo -u notuxic -H -- vim +'PlugUpgrade' +'PlugUpdate --sync' +qa
+
+echo "[INFO] Updating zsh plugins ..."
+sudo -u notuxic -H -- zsh -c "source ~/.zshrc && antigen update"
+
+echo "[INFO] Updating tmux plugins ..."
+sudo -u notuxic -H -- bash /home/notuxic/.tmux/plugins/tpm/scripts/update_plugin.sh all all
+

@@ -17,7 +17,8 @@ fi
 source ~/.zsh/antigen/antigen.zsh
 
 # adds support for more special keys
-antigen bundle https://github.com/belak/zsh-utils editor
+antigen use belak/zsh-utils --branch=main
+antigen bundle editor@main
 # autopair
 antigen bundle hlissner/zsh-autopair
 # fish-style completion suggestions
@@ -111,12 +112,22 @@ __zshrc_tmux_ssh_status() {
     local _tmux_status_right="$(tmux show-options -gv status-right)"
     if [[ -n "$SSH_CONNECTION" ]]; then
       tmux set-option -s status-right "${_tmux_status_right}#[fg=color3]#[fg=color15,bg=color3] SSH "
-    else
-      tmux set-option -s status-right "${_tmux_status_right}"
     fi
   fi
 }
 __zshrc_tmux_ssh_status
+
+
+## show jail status in tmux statusline
+__zshrc_tmux_jail_status() {
+  if [[ -n "$TMUX" ]]; then
+    local _tmux_status_right="$(tmux show-options -gv status-right)"
+    if [[ $(uname -s) == "FreeBSD" && $(sysctl -n security.jail.jailed) != "0" ]]; then
+      tmux set-option -s status-right "${_tmux_status_right}#[fg=color3]#[fg=color15,bg=color3] JAIL "
+    fi
+  fi
+}
+__zshrc_tmux_jail_status
 
 
 ## Ctrl-z toggles the latest foreground job, preserving zsh input buffer

@@ -18,7 +18,7 @@ stop_redshift() {
 
 check_redshift() {
 	pid=$(cat "$REDSHIFT_PIDFILE")
-	for _pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ redshift/ { print $1 }')
+	for _pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ redshift/ { print $1 }')
 	do
 		if [ x"$pid" = x"$_pid" ]
 		then
@@ -30,7 +30,7 @@ check_redshift() {
 }
 
 update_i3status() {
-	for _pid in $(ps -A -o pid,cmd | awk '/[[:digit:]]+ i3status/ { print $1 }')
+	for _pid in $(ps -A -o pid,args | awk '/[[:digit:]]+ i3status/ { print $1 }')
 	do
 		kill -s USR1 "$_pid"
 	done
